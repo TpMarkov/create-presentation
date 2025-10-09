@@ -1,7 +1,8 @@
-import { currentUser } from "@clerk/nextjs/server";
+"use server";
 import { client } from "@/lib/prisma";
+import { currentUser } from "@clerk/nextjs/server";
 
-export const onAuthenticateUser = async () => {
+export const onAuthencticateUser = async () => {
   try {
     const user = await currentUser();
 
@@ -9,7 +10,7 @@ export const onAuthenticateUser = async () => {
       return { status: 403 };
     }
 
-    const userExists = await client.user.findUnique({
+    const userExist = await client.user.findUnique({
       where: {
         clerkId: user.id,
       },
@@ -21,8 +22,9 @@ export const onAuthenticateUser = async () => {
         },
       },
     });
-    if (userExists) {
-      return { status: 200, user: userExists };
+
+    if (userExist) {
+      return { status: 200, user: userExist };
     }
 
     const newUser = await client.user.create({
@@ -37,9 +39,10 @@ export const onAuthenticateUser = async () => {
     if (newUser) {
       return { status: 201, user: newUser };
     }
+
     return { status: 400 };
   } catch (error) {
-    console.log("Error", error);
+    console.log("Error:", error);
     return { status: 500 };
   }
 };
