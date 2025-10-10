@@ -2,7 +2,7 @@
 import { SignedIn, UserButton, useUser } from "@clerk/nextjs";
 import { User } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar";
 import { Button } from "../ui/button";
 
@@ -11,47 +11,46 @@ const NavFooter = ({ prismaUser }: { prismaUser: User }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  if (!isLoaded || !isSignedIn) {
-    router.push("/sign-in");
-  }
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      router.push("/sign-in");
+    }
+  }, [isLoaded, isSignedIn, router]);
 
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <div className="flex flex-col gap-y-6 items-start group-data-[collapsible=icon]:hidden">
-          {!prismaUser.subscription && (
-            <div className="flex flex-col items-start p-2 pb-3 gap-4 bg-background-8-">
-              <div className="flex flex-col items-start gap-1">
-                <p className="text-base font-bold">
-                  Get <span className="text-blue-400">Creative AI</span>
+        <div className="flex flex-col gap-y-4 items-start w-full group-data-[collapsible=icon]:hidden">
+          {!prismaUser?.subscription && (
+            <div className="flex flex-col items-start p-3 gap-3 rounded-md bg-muted">
+              <div>
+                <p className="text-sm font-bold">
+                  Get{" "}
+                  <span className="text-blue-400 font-bold">Creative AI</span>
                 </p>
-                <span className="text-sm dark:text-muted-foreground">
-                  Unlock all feautures including AI and more
-                </span>
+                <p className="text-xs text-muted-foreground">
+                  Unlock all features including AI and more.
+                </p>
               </div>
-              <div className="w-full p-[1px] rounded-lg">
-                <Button
-                  size="lg"
-                  className="w-full rounded-lg font-bold text-white bg-transparent border border-transparent hover:cursor-pointer hover:opacity-90 transition-all duration-300"
-                  style={{
-                    borderImage:
-                      "linear-gradient(to right, #60a5fa, #f472b6) 1",
-                    borderRadius: "0px",
-                  }}
-                >
-                  {loading ? "Upgrading..." : "Upgrade"}
-                </Button>
-              </div>
+              <Button
+                size="sm"
+                className="w-full font-semibold text-white bg-gradient-to-r from-blue-500 to-pink-400 hover:cursor-pointer"
+                disabled={loading}
+              >
+                {loading ? "Upgrading..." : "Upgrade"}
+              </Button>
             </div>
           )}
           <SignedIn>
-            <SidebarMenuButton className="size-lg data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
+            <SidebarMenuButton className="w-full flex items-center gap-3 text-left">
               <UserButton />
-              <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-                <span className="truncate font-semibold">{user?.fullName}</span>
-                <span className="truncate text-muted-foreground">
+              <div className="flex-1">
+                <p className="truncate text-sm font-semibold">
+                  {user?.fullName}
+                </p>
+                <p className="truncate text-xs text-muted-foreground">
                   {user?.emailAddresses[0].emailAddress}
-                </span>
+                </p>
               </div>
             </SidebarMenuButton>
           </SignedIn>

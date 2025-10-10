@@ -5,19 +5,19 @@ import React from "react";
 
 const Searchbar = () => {
   return (
-    <div className="min-w-[60%] relative flex items-center rounded-full bg-primary-90">
+    <div className="relative flex w-full max-w-md items-center rounded-full bg-muted px-3 py-1.5">
+      <Search className="absolute left-4 text-muted-foreground h-4 w-4" />
+      <Input
+        type="text"
+        placeholder="Search by title..."
+        className="pl-10 pr-4 bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-sm"
+      />
       <Button
-        type="submit"
         size="sm"
-        variant={"ghost"}
-        className="absolute left-0 h-full rounded-l-none bg-transparent hover:bg-transparent"
+        variant="ghost"
+        className="ml-2 rounded-full hover:bg-muted-foreground/10"
       >
-        <Search className="h-4 w-4" />
-        <Input
-          type="text"
-          placeholder="Search by title"
-          className="flex-grow flex-1 flex bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 ml-6 "
-        />
+        Go
       </Button>
     </div>
   );

@@ -9,23 +9,27 @@ import React from "react";
 type Props = {
   children: React.ReactNode;
 };
-const layout = async ({ children }: Props) => {
-  const recentProjects = await getRecentProjects();
 
-  const checkUser = await onAuthencticateUser();
+const Layout = async ({ children }: Props) => {
+  const [recentProjects, checkUser] = await Promise.all([
+    getRecentProjects(),
+    onAuthencticateUser(),
+  ]);
 
-  if (!checkUser.user) redirect("/sign-in");
+  if (!checkUser?.user) redirect("/sign-in");
+
   return (
     <SidebarProvider>
       <AppSidebar
         user={checkUser.user}
-        recentProjects={recentProjects.data || []}
+        recentProjects={recentProjects?.data || []}
       />
       <SidebarInset>
-        <UpperInfoBar user={checkUser.user}>{children}</UpperInfoBar>
+        <UpperInfoBar user={checkUser.user} />
+        {children}
       </SidebarInset>
     </SidebarProvider>
   );
 };
 
-export default layout;
+export default Layout;
