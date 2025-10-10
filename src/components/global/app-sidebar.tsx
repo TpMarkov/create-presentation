@@ -1,14 +1,18 @@
+"use client";
 import { Project, User } from "@prisma/client";
 import React from "react";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarGroup,
   SidebarHeader,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import NavMain from "./nav-main";
+import { data } from "@/lib/constants";
+import RecentOpen from "./recent-open";
+import NavFooter from "./nav-footer";
 
 const AppSidebar = ({
   recentProjects,
@@ -23,24 +27,29 @@ const AppSidebar = ({
       {...props}
       className="max-w-[212px] bg-background-90"
     >
-      <SidebarHeader className="pt-6 px-3 pb-0">
+      <SidebarHeader className="pt-6 px-2 pb-0">
         <SidebarMenuButton
           size="lg"
-          className="data-[state=open]:text-sidebar-accent-foreground"
+          className="group data-[state=open]:text-sidebar-accent-foreground"
         >
           <div className="flex spect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground">
-            <Avatar className="h-10 w-10 rounded-full">
-              <AvatarImage src="/vivid.png" alt="Vivid-logо" />
-              <AvatarFallback className="rounded-lg">VI</AvatarFallback>
+            <Avatar className="h-6 w-6 group-data-[state=open]:h-8 group-data-[state=open]:w-8 rounded-md">
+              <AvatarImage src="/vivid.svg" alt="Vivid-logo" />
+              <AvatarFallback className="rounded-md">VI</AvatarFallback>
             </Avatar>
           </div>
+          <span className="truncate text-primary text-3xl font-semibold">
+            Vivid
+          </span>
         </SidebarMenuButton>
       </SidebarHeader>
-      <SidebarContent>
-        <SidebarGroup />
-        <SidebarGroup />
+      <SidebarContent className="px-2 mt-10 gap-y-6">
+        <NavMain items={data.navMain} />
+        <RecentOpen recentProjects={recentProjects} />
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter>
+        <NavFooter prismaUser={user} />
+      </SidebarFooter>
     </Sidebar>
   );
 };

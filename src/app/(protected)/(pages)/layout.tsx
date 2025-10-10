@@ -1,23 +1,31 @@
+import { getRecentProjects } from "@/actions/project";
 import { onAuthencticateUser } from "@/actions/user";
 import AppSidebar from "@/components/global/app-sidebar";
-import { Sidebar, SidebarProvider } from "@/components/ui/sidebar";
+import UpperInfoBar from "@/components/global/upper-infobar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { redirect } from "next/navigation";
 import React from "react";
+
 type Props = {
   children: React.ReactNode;
 };
-const Layout = async ({ children }: Props) => {
-  //   const recentProjects = await getRecentProjects();
+const layout = async ({ children }: Props) => {
+  const recentProjects = await getRecentProjects();
 
-  const chekcUser = await onAuthencticateUser();
-  if (!chekcUser.user) {
-    redirect("/sign-in");
-  }
+  const checkUser = await onAuthencticateUser();
+
+  if (!checkUser.user) redirect("/sign-in");
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar
+        user={checkUser.user}
+        recentProjects={recentProjects.data || []}
+      />
+      <SidebarInset>
+        <UpperInfoBar user={checkUser.user}>{children}</UpperInfoBar>
+      </SidebarInset>
     </SidebarProvider>
   );
 };
 
-export default Layout;
+export default layout;

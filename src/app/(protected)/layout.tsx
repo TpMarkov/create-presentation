@@ -10,11 +10,9 @@ type Props = {
 const Layout = async (props: Props) => {
   const auth = await onAuthencticateUser();
 
-  if (!auth.user) {
-    redirect("/sign-in");
-  }
+  if (!auth.user) redirect("/sign-in");
 
-  return <div>{props.children}</div>;
+  return <div className="w-full min-h-screen">{props.children}</div>;
 };
 
 export default Layout;
