@@ -8,12 +8,16 @@ import {
 } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import { SparklesIcon } from "lucide-react";
+import RecentPrompts from "../GenerativeAI/RecentPrompts";
+import usePromptStore from "@/store/usePormptStore";
 
 type Props = {
   onSelectOption: (option: string) => void;
 };
 
 const CreatePage = ({ onSelectOption }: Props) => {
+  const { prompts, setPage } = usePromptStore();
+
   return (
     <motion.div
       variants={containerVariants}
@@ -92,6 +96,8 @@ const CreatePage = ({ onSelectOption }: Props) => {
           </motion.div>
         ))}
       </motion.div>
+
+      <RecentPrompts />
     </motion.div>
   );
 };

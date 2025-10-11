@@ -69,3 +69,9 @@ export type ContentType =
   | "customButton"
   | "table"
   | "tableOfContents";
+
+export interface OutlineCard {
+  title: string;
+  id: string;
+  order: number;
+}

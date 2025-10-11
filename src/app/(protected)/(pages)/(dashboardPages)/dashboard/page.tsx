@@ -23,7 +23,7 @@ const DashboardPage = async () => {
       {allProjects.data && allProjects.data.length > 0 ? (
         <Projects projects={allProjects.data} />
       ) : (
-        <div className="w-full min-h-screen justify-center items-center">
+        <div className="w-full h-screen justify-center items-center">
           <NotFound />
         </div>
       )}

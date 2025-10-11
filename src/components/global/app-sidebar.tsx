@@ -13,6 +13,7 @@ import NavMain from "./nav-main";
 import { data } from "@/lib/constants";
 import RecentOpen from "./recent-open";
 import NavFooter from "./nav-footer";
+import Link from "next/link";
 
 const AppSidebar = ({
   recentProjects,
@@ -31,22 +32,24 @@ const AppSidebar = ({
           className="group flex items-start gap-3 data-[state=open]:justify-start justify-start"
         >
           {/* Centered + responsive logo */}
-          <div className="flex items-center justify-center">
-            <Avatar
-              className="
-                transition-all
-                duration-300
-                ease-in-out
-                rounded-md
-                group-data-[collapsible=icon]:h-7 
-                group-data-[collapsible=icon]:w-7 
-                h-9 w-9
+          <Link href="/dashboard">
+            <div className="flex items-center justify-center">
+              <Avatar
+                className="
+              transition-all
+              duration-300
+              ease-in-out
+              rounded-md
+              group-data-[collapsible=icon]:h-7 
+              group-data-[collapsible=icon]:w-7 
+              h-9 w-9
               "
-            >
-              <AvatarImage src="/vivid.svg" alt="Vivid-logo" />
-              <AvatarFallback>VI</AvatarFallback>
-            </Avatar>
-          </div>
+              >
+                <AvatarImage src="/vivid.svg" alt="Vivid-logo" />
+                <AvatarFallback>VI</AvatarFallback>
+              </Avatar>
+            </div>
+          </Link>
 
           {/* Logo text - hidden when sidebar is collapsed */}
           <span
