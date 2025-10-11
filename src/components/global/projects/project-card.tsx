@@ -11,27 +11,23 @@ import { timeAgo } from "@/lib/utils";
 import AlertDialogBox from "../alert-dialog";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { recoverProject } from "@/actions/project";
+import { deleteProject, recoverProject } from "@/actions/project";
 
 type Props = {
-  key: string;
   projectId: string;
   title: string;
   createdAt: string;
   isDeleted?: boolean;
-  src: string;
-  slideData: JsonValue;
   themeName: string;
+  slideData: JsonValue;
 };
 
 const ProjectCard = ({
   createdAt,
   projectId,
   title,
-  src,
   slideData,
   isDeleted,
-  key,
   themeName,
 }: Props) => {
   const [loading, setLoading] = useState(false);
@@ -39,6 +35,8 @@ const ProjectCard = ({
   const { setSlides } = useSlideStore();
 
   const router = useRouter();
+
+  const theme = themes.find((theme) => theme.name === themeName || themes[0]);
 
   const handleNavigation = () => {
     setSlides(JSON.parse(JSON.stringify(slideData)));
@@ -60,7 +58,7 @@ const ProjectCard = ({
       const response = await recoverProject(projectId);
       if (response.status !== 200) {
         toast.error("Oppse!:", {
-          description: "Something went wrong. Please contact support",
+          description: response.error || "Something went wrong",
         });
       }
 
@@ -81,7 +79,41 @@ const ProjectCard = ({
     }
   };
 
-  const theme = themes.find((theme) => theme.name === themeName || themes[0]);
+  const handleDelete = async () => {
+    setLoading(true);
+    if (!projectId) {
+      setLoading(false);
+      toast.error("Error", {
+        description: "Project not found",
+      });
+      setOpen(false);
+      return;
+    }
+
+    try {
+      const res = await deleteProject(projectId);
+
+      if (res.status !== 200) {
+        toast.error("Oppse!", {
+          description: res.error || "Failed to delete project",
+        });
+        return;
+      }
+
+      setLoading(false);
+      setOpen(false);
+      toast.success("Deleted", {
+        description: "Project deleted successfully",
+      });
+
+      router.refresh();
+    } catch (error) {
+      setLoading(false);
+      toast.error("Oppse!", {
+        description: "Failed to delete project",
+      });
+    }
+  };
 
   return (
     <motion.div
@@ -94,11 +126,11 @@ const ProjectCard = ({
         className="relative aspec-[16/10] overflow-hidden rounded-lg cursor-pointer"
         onClick={handleNavigation}
       >
-        <ThumnailPreview
-          //WIP: Add the slide data
-          // slide={JSON.parse(JSON.stringify(slideData)?.[0])}
+        {/* <ThumnailPreview
+          // WIP: Add the slide data
+          slide={JSON.parse(JSON.stringify(slideData)?.[0])}
           theme={theme}
-        />
+        /> */}
       </div>
       <div className="w-full">
         <div className="space-y-1">
@@ -112,26 +144,42 @@ const ProjectCard = ({
             >
               {timeAgo(createdAt)}
             </p>
-            {/* {isDeleted ? ( */}
-            <AlertDialogBox
-              description="This will recover your project and restore your data"
-              className="bg-green-500 text-white dark:bg-green-600 hover:bg-green-600 dark:hover:bg-green-700"
-              loading={loading}
-              open={open}
-              onClick={handleRecover}
-              handleOpen={() => setOpen(!open)}
-            >
-              <Button
-                size="sm"
-                variant={"ghost"}
-                className="bg-background-80 dark:hover:bg-background-90"
+            {isDeleted ? (
+              <AlertDialogBox
+                description="This will recover your project and restore your data"
+                className="bg-green-500 text-white dark:bg-green-600 hover:bg-green-600 dark:hover:bg-green-700"
+                loading={loading}
+                open={open}
+                onClick={handleRecover}
+                handleOpen={() => setOpen(!open)}
               >
-                Recover
-              </Button>
-            </AlertDialogBox>
-            {/* ) : ( */}
-            {/* "" */}
-            {/* )} */}
+                <Button
+                  size="sm"
+                  variant={"ghost"}
+                  className="bg-background-80 dark:hover:bg-background-90"
+                >
+                  Recover
+                </Button>
+              </AlertDialogBox>
+            ) : (
+              <AlertDialogBox
+                description="This will recover your project and restore your data"
+                className="bg-red-500 text-white dark:bg-red-600 hover:bg-reds-600 dark:hover:bg-red-700"
+                loading={loading}
+                open={open}
+                onClick={handleDelete}
+                handleOpen={() => setOpen(!open)}
+              >
+                <Button
+                  size="sm"
+                  variant={"destructive"}
+                  className=""
+                  disabled={loading}
+                >
+                  Delete
+                </Button>
+              </AlertDialogBox>
+            )}
           </div>
         </div>
       </div>

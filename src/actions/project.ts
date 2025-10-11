@@ -85,3 +85,31 @@ export const recoverProject = async (projectId: string) => {
     return { status: 500, error: "Internal server error" };
   }
 };
+
+export const deleteProject = async (projectId: string) => {
+  try {
+    const checkUser = await onAuthencticateUser();
+
+    if (checkUser.status !== 200 || !checkUser.user) {
+      return { status: 403, data: [], error: "User not authenticated" };
+    }
+
+    const updatedProject = await client.project.update({
+      where: {
+        id: projectId,
+      },
+      data: {
+        isDeleted: true,
+      },
+    });
+
+    if (!updatedProject) {
+      return { status: 500, error: "Failed to delete project" };
+    }
+
+    return { status: 200, data: updatedProject };
+  } catch (err) {
+    console.error("Error:", err);
+    return { status: 500, error: "Failed to delete project" };
+  }
+};
