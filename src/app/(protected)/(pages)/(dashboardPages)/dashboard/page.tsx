@@ -1,5 +1,6 @@
 import { getAllProjects } from "@/actions/project";
 import NotFound from "@/components/global/not-found";
+import ProjectCard from "@/components/global/projects/project-card";
 import Projects from "@/components/global/projects/projects";
 import React from "react";
 
@@ -19,8 +20,10 @@ const DashboardPage = async () => {
         </div>
       </div>
       {/* Projects */}
+      {/* Add Project Card when all the data for the project is available */}
+      <ProjectCard />
       {allProjects.data && allProjects.data.length > 0 ? (
-        <Projects />
+        <Projects projects={allProjects.data} />
       ) : (
         <div className="w-full min-h-screen justify-center items-center">
           <NotFound />
