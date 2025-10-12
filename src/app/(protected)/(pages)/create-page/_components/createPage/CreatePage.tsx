@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   containerVariants,
@@ -41,9 +41,15 @@ const CreatePage = ({ onSelectOption }: Props) => {
           <motion.div
             variants={itemVariants}
             whileHover={{
-              scale: 1.5,
-              rotate: 1,
-              transition: { duration: 0.1 },
+              scale: 1.1,
+              rotate: [0, 2, -2, 0],
+              y: -10,
+              transition: {
+                duration: 0.5,
+                ease: "easeInOut",
+                repeat: Infinity,
+                repeatType: "reverse",
+              },
             }}
             className={`${
               option.highligh

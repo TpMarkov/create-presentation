@@ -2,19 +2,26 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { containerVariants, itemVariants } from "@/lib/constants";
+import useCreativeAIStore from "@/store/useCreativeAIStore";
 import usePromptStore from "@/store/usePormptStore";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 const RecentPrompts = () => {
   const { prompts, setPage } = usePromptStore();
+  const { addMultipleOutlines, setCurrentAIPrompt } = useCreativeAIStore();
 
   const handleEdit = (id: string) => {
     const prompt = prompts.find((prompt) => prompt?.id === id);
 
     if (prompt) {
       setPage("creative-ai");
-      addMUltiipleOutlines(prompt?.outlines);
-      setCurrentAiPrompt(prompt?.title);
+      addMultipleOutlines(prompt?.outlines);
+      setCurrentAIPrompt(prompt?.title);
+    } else {
+      toast.error("Error:", {
+        description: "Prompt not found",
+      });
     }
   };
   return (
@@ -30,40 +37,46 @@ const RecentPrompts = () => {
         variants={containerVariants}
         className="space-y-2 w-full lg:max-w-[80%] mx-auto"
       >
-        <motion.div variants={itemVariants}>
-          <Card className="p-4 flex justify-between hover:bg-accent/50 transition-colors duration-300">
-            {/* Wrap everything in a flex container and center items vertically */}
-            <div className="flex items-center justify-between w-full">
-              {/* Left side: title + time */}
-              <div className="flex flex-col justify-center max-w-[70%]">
-                <h3 className="font-semibold text-xl line-clamp-1">
-                  {/* {prompt?.title} */}
-                  Some title
-                </h3>
-                <p className="font-semibold text-sm text-muted-foreground">
-                  5 h ago
-                  {/* {timeAgo(prompt?.createdAt)} */}
-                </p>
-              </div>
+        {prompts.map((prompt, i) => (
+          <motion.div key={i} variants={itemVariants}>
+            <Card
+              key={i}
+              className="p-4 flex justify-between hover:bg-accent/50 transition-colors duration-300"
+            >
+              {/* Wrap everything in a flex container and center items vertically */}
+              <div className="flex items-center justify-between w-full">
+                {/* Left side: title + time */}
+                <div className="flex flex-col justify-center max-w-[70%]">
+                  <h3 className="font-semibold text-xl line-clamp-1">
+                    {/* {prompt?.title} */}
+                    Some title
+                  </h3>
+                  <p className="font-semibold text-sm text-muted-foreground">
+                    5 h ago
+                    {/* {timeAgo(prompt?.createdAt)} */}
+                  </p>
+                </div>
 
-              {/* Right side: Creative AI + Edit button */}
-              <div className="flex items-center gap-4">
-                <p className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 text-transparent bg-clip-text font-bold">
-                  Creative AI
-                </p>
-                <Button
-                  className="rounded-lg bg-primary/80 dark:hover:bg-gray-700 hover:bg-gray-200 hover:text-primary"
-                  variant="default"
-                  onClick={() => handleEdit(prompt?.id)}
-                  size="sm"
-                >
-                  Edit
-                </Button>
+                {/* Right side: Creative AI + Edit button */}
+                <div className="flex items-center gap-4">
+                  <p className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 text-transparent bg-clip-text font-bold">
+                    Creative AI
+                  </p>
+                  <Button
+                    className="rounded-lg bg-primary/80 dark:hover:bg-gray-700 hover:bg-gray-200 hover:text-primary"
+                    variant="default"
+                    onClick={() => handleEdit(prompt?.id)}
+                    size="sm"
+                  >
+                    Edit
+                  </Button>
+                </div>
               </div>
-            </div>
-          </Card>
-        </motion.div>
+            </Card>
+          </motion.div>
+        ))}
       </motion.div>
+      {prompts.length > 0 && <RecentPrompts />}
     </motion.div>
   );
 };
