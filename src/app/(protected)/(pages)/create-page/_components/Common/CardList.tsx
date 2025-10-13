@@ -6,7 +6,6 @@ import { AnimatePresence } from "framer-motion";
 import React, { useRef, useState } from "react";
 import Card from "./Card";
 import AddCardButton from "./AddCardButton";
-import { toast } from "sonner";
 
 type Props = {
   outlines: OutlineCard[];
