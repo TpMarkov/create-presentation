@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { containerVariants, itemVariants } from "@/lib/constants";
+import { timeAgo } from "@/lib/utils";
 import useCreativeAIStore from "@/store/useCreativeAIStore";
 import usePromptStore from "@/store/usePormptStore";
 import { motion } from "framer-motion";
@@ -48,12 +49,10 @@ const RecentPrompts = () => {
                 {/* Left side: title + time */}
                 <div className="flex flex-col justify-center max-w-[70%]">
                   <h3 className="font-semibold text-xl line-clamp-1">
-                    {/* {prompt?.title} */}
-                    Some title
+                    {prompt?.title}
                   </h3>
                   <p className="font-semibold text-sm text-muted-foreground">
-                    5 h ago
-                    {/* {timeAgo(prompt?.createdAt)} */}
+                    {timeAgo(prompt?.createdAt)}
                   </p>
                 </div>
 
@@ -76,7 +75,6 @@ const RecentPrompts = () => {
           </motion.div>
         ))}
       </motion.div>
-      {prompts.length > 0 && <RecentPrompts />}
     </motion.div>
   );
 };

@@ -1,5 +1,4 @@
 import { OutlineCard } from "@/lib/types";
-import { currentUser } from "@clerk/nextjs/server";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
