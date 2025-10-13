@@ -134,7 +134,7 @@ const CardList = ({
 
   const onAddCard = (index: number) => {
     const newCard = {
-      id: Math.random().toString(36).substring(2, 9),
+      id: crypto.randomUUID(),
       title: editText || "New Section",
       order: (index !== undefined ? index + 1 : outlines.length) + 1,
     };
@@ -164,7 +164,7 @@ const CardList = ({
         marginTop: "0.5rem",
         transition: "margin 0.2s cubic-bezier(0.25, 0.1, 0.25, 1)",
       };
-    } else if (cardIndex === dragOverIndex - 1) {
+    } else if (dragOverIndex !== null && cardIndex === dragOverIndex - 1) {
       return {
         borderBottom: "2px soli #000",
         marginBottom: "0.5rem",
