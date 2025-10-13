@@ -16,36 +16,43 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
-import { SelectValue } from "@radix-ui/react-select";
 import CardList from "../Common/CardList";
+import usePromptStore from "@/store/usePormptStore";
+import RecentPrompts from "../GenerativeAI/RecentPrompts";
+import { toast } from "sonner";
+import { generateCreativePrompt } from "@/actions/chatgpt";
 
 type Props = {
   onBack: () => void;
 };
 const CreateAI = ({ onBack }: Props) => {
   const router = useRouter();
-  const { currentAIPrompt, setCurrentAIPrompt, outlines, resetOutlines } =
-    useCreativeAIStore();
+  const {
+    currentAIPrompt,
+    addOutline,
+    setCurrentAIPrompt,
+    outlines,
+    addMultipleOutlines,
+    resetOutlines,
+  } = useCreativeAIStore();
 
-  const [editingCard, setEditingCrd] = useState<string | null>(null);
+  const [editingCard, setEditingCard] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
-  const [numberOfCartds, setNumberOfCards] = useState(0);
+  const [numberOfCards, setNumberOfCards] = useState(0);
+  const { prompts } = usePromptStore();
 
   const resetCards = () => {
-    setEditingCrd(null);
+    setEditingCard(null);
     setSelectedCard(null);
     setEditText("");
 
     setCurrentAIPrompt("");
     resetOutlines();
-  };
-
-  const generateOutline = () => {
-    setIsGenerating(true);
   };
 
   useEffect(() => {
@@ -58,6 +65,22 @@ const CreateAI = ({ onBack }: Props) => {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isGenerating]);
+
+  const generateOutline = async () => {
+    if (currentAIPrompt === "") {
+      toast.error("Error", {
+        description: "Please enter a prompt",
+      });
+      return;
+    }
+
+    setIsGenerating(true);
+    const res = await generateCreativePrompt(currentAIPrompt);
+
+    // WIP: use open ai and complete this function
+  };
+
+  const handleGenerate = () => {};
 
   return (
     <motion.div
@@ -95,7 +118,7 @@ const CreateAI = ({ onBack }: Props) => {
           />
           <div className="flex items-center gap-3">
             <Select
-              value={numberOfCartds.toString()}
+              value={numberOfCards.toString()}
               onValueChange={(value) => setNumberOfCards(parseInt(value))}
             >
               <SelectTrigger>
@@ -149,7 +172,41 @@ const CreateAI = ({ onBack }: Props) => {
           </Button>
         )}
       </div>
-      <CardList />
+      <CardList
+        outlines={outlines}
+        addMultipleOutlines={addMultipleOutlines}
+        addOutline={addOutline}
+        editingCard={editingCard}
+        editText={editText}
+        selectedCard={selectedCard}
+        onEditChange={setEditText}
+        onCardSelect={setSelectedCard}
+        onCardDoubleClick={(id, title) => {
+          setEditingCard(id);
+          setEditText(title);
+        }}
+        setEditText={setEditText}
+        setEditingCard={setEditingCard}
+        setSelectedCard={setSelectedCard}
+      />
+
+      {outlines.length > 0 && (
+        <Button
+          className="w-full"
+          onClick={handleGenerate}
+          disabled={isGenerating}
+        >
+          {isGenerating ? (
+            <>
+              <Loader2Icon /> Generating...
+            </>
+          ) : (
+            "Generate"
+          )}
+        </Button>
+      )}
+
+      {prompts.length > 0 && <RecentPrompts />}
     </motion.div>
   );
 };
