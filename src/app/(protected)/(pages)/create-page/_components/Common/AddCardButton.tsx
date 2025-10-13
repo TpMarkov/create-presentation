@@ -34,11 +34,11 @@ const AddCardButton = ({ onAddCard }: Props) => {
             <Button
               variant="outline"
               size="sm"
-              className="rounded-full h-8 p-0 bg-primary hover:bg-primary"
+              className="rounded-full h-8 p-0"
               onClick={onAddCard}
               aria-label="Add new card"
             >
-              <PlusIcon className="text-black" />
+              <PlusIcon className="dark:text-white" />
             </Button>
             <div className="w-[40%] h-[1px] bg-primary" />
           </motion.div>

@@ -19,8 +19,8 @@ type Props = {
   onCardClick: () => void;
   onCardDoubleClick: () => void;
   dragHandlers: {
-    onDragStart: (e: React.DragEventHandler) => void;
-    onDragEnd: () => void;
+    onDragStart: (e: React.DragEvent) => void;
+    onDragEnd: (e: React.DragEvent) => void;
   };
   onDragOver: (e: React.DragEvent) => void;
   dragOverStyles: React.CSSProperties;
@@ -53,9 +53,10 @@ const Card = ({
     >
       <div
         draggable
+        onDragStart={dragHandlers.onDragStart}
+        onDragEnd={dragHandlers.onDragEnd}
         onDragOver={onDragOver}
         style={dragOverStyles}
-        {...dragHandlers}
       >
         <UICard
           className={`p-4 cursor-grab active:cursor-grabbing bg-primary-90 ${

@@ -15,6 +15,10 @@ import { Input } from "@/components/ui/input";
 import CardList from "../Common/CardList";
 import { OutlineCard } from "@/lib/types";
 import { v4 as uuidv4 } from "uuid";
+import { createProject } from "@/actions/project";
+import { toast } from "sonner";
+import { useSlideStore } from "@/store/useSlideStore";
+import { useRouter } from "next/navigation";
 type Props = {
   onBack: () => void;
 };
@@ -26,6 +30,8 @@ const ScratchPage = ({ onBack }: Props) => {
   const [editText, setEditText] = useState("");
   const [editingCard, setEditingCard] = useState<string | null>(null);
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
+  const { setProject } = useSlideStore();
+  const router = useRouter();
 
   const handleBack = () => {
     resetOutlines();
@@ -46,6 +52,32 @@ const ScratchPage = ({ onBack }: Props) => {
 
     setEditText("");
     addOutline(newCard);
+  };
+
+  const handleGenerate = async () => {
+    if (outlines.length === 0) {
+      toast.error("Error:", {
+        description: "Please add at least one card to generate PPT",
+      });
+      return;
+    }
+
+    const res = await createProject(outlines?.[0]?.title, outlines);
+
+    if (res.data) {
+      setProject(res.data);
+      resetOutlines();
+      toast.success("Success", {
+        description: "Project created successfully",
+      });
+
+      router.push(`/presentation/${res.data.id}/select-theme`);
+    } else {
+      toast.error("Error:", {
+        description: "Failed to create project",
+      });
+      return;
+    }
   };
 
   return (
@@ -132,6 +164,11 @@ const ScratchPage = ({ onBack }: Props) => {
       >
         Add Card
       </Button>
+      {outlines?.length > 0 && (
+        <Button className="w-full" onClick={handleGenerate}>
+          Generate PPT
+        </Button>
+      )}
     </motion.div>
   );
 };

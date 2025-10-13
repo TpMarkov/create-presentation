@@ -174,20 +174,20 @@ const CreateAI = ({ onBack }: Props) => {
       </div>
       <CardList
         outlines={outlines}
-        addMultipleOutlines={addMultipleOutlines}
         addOutline={addOutline}
+        addMultipleOutlines={addMultipleOutlines}
         editingCard={editingCard}
         editText={editText}
         selectedCard={selectedCard}
         onEditChange={setEditText}
         onCardSelect={setSelectedCard}
+        setEditingCard={setEditingCard}
+        setSelectedCard={setSelectedCard}
         onCardDoubleClick={(id, title) => {
           setEditingCard(id);
           setEditText(title);
         }}
         setEditText={setEditText}
-        setEditingCard={setEditingCard}
-        setSelectedCard={setSelectedCard}
       />
 
       {outlines.length > 0 && (
