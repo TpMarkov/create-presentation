@@ -24,6 +24,10 @@ import usePromptStore from "@/store/usePormptStore";
 import RecentPrompts from "../GenerativeAI/RecentPrompts";
 import { toast } from "sonner";
 import { generateCreativePrompt } from "@/actions/chatgpt";
+import { OutlineCard } from "@/lib/types";
+import { v4 as uuid } from "uuid";
+import { createProject } from "@/actions/project";
+import { useSlideStore } from "@/store/useSlideStore";
 
 type Props = {
   onBack: () => void;
@@ -44,7 +48,8 @@ const CreateAI = ({ onBack }: Props) => {
   const [selectedCard, setSelectedCard] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
   const [numberOfCards, setNumberOfCards] = useState(0);
-  const { prompts } = usePromptStore();
+  const { prompts, addPrompt } = usePromptStore();
+  const { setProject } = useSlideStore();
 
   const resetCards = () => {
     setEditingCard(null);
@@ -76,11 +81,78 @@ const CreateAI = ({ onBack }: Props) => {
 
     setIsGenerating(true);
     const res = await generateCreativePrompt(currentAIPrompt);
+    if (res.status === 200 && res?.data?.outlines) {
+      const cardsData: OutlineCard[] = [];
+      res.data?.outlines.map((outline: string, idx: number) => {
+        const newCard = {
+          id: uuid(),
+          title: outline,
+          order: idx + 1,
+        };
+        cardsData.push(newCard);
+      });
+
+      addMultipleOutlines(cardsData);
+      setNumberOfCards(cardsData.length);
+      toast.success("Success", {
+        description: "Outline generated successfully",
+      });
+    } else {
+      toast.error("Error", {
+        description: "Failed to generate Outline. Please try agaian",
+      });
+      return;
+    }
+    setIsGenerating(false);
 
     // WIP: use open ai and complete this function
   };
 
-  const handleGenerate = () => {};
+  // WIP: implement handle generate
+  const handleGenerate = async () => {
+    setIsGenerating(true);
+    if (outlines.length === 0) {
+      toast.error("Error", {
+        description: "Please add at least one card to generate slides.",
+      });
+      return;
+    }
+    try {
+      const res = await createProject(
+        currentAIPrompt,
+        outlines.slice(0, numberOfCards)
+      );
+
+      if (res.status !== 200 || !res.data) {
+        throw new Error("Unable to create project");
+      }
+      router.push(`/presentation/${res.data.id}/select-theme`);
+      setProject(res.data);
+      addPrompt({
+        id: uuid(),
+        title: currentAIPrompt || outlines?.[0]?.title,
+        outlines: outlines,
+        createdAt: new Date().toISOString(),
+      });
+
+      toast.success("Success", {
+        description: "Project successfully created.",
+      });
+      setCurrentAIPrompt("");
+      resetOutlines();
+    } catch (err) {
+      console.error("Error:", err);
+      toast.error("Error", {
+        description: "Failed to create project.",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  useEffect(() => {
+    setNumberOfCards(outlines.length);
+  }, [outlines.length]);
 
   return (
     <motion.div
@@ -138,8 +210,7 @@ const CreateAI = ({ onBack }: Props) => {
                         className="font-semibold"
                         value={el.toString()}
                       >
-                        {el}
-                        {el === 1 ? "Card" : "Cards"}
+                        {el} {el === 1 ? "Card" : "Cards"}
                       </SelectItem>
                     ))
                   )}

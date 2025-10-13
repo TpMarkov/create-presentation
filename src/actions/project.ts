@@ -148,3 +148,28 @@ export const createProject = async (title: string, outlines: OutlineCard[]) => {
     return { status: 500, error: "Internal server error" };
   }
 };
+
+export const getProjectById = async (projectId: string) => {
+  try {
+    const checkUser = await onAuthencticateUser();
+
+    if (checkUser.status !== 200 || !checkUser.user) {
+      return { status: 403, error: "User not authenticated" };
+    }
+
+    const project = await client.project.findFirst({
+      where: {
+        id: projectId,
+      },
+    });
+
+    if (!project) {
+      return { status: 404, error: "Porject not found" };
+    }
+
+    return { status: 200, data: project };
+  } catch (err) {
+    console.error("Error:", err);
+    return { status: 500, error: "Internal server error" };
+  }
+};
