@@ -5,7 +5,7 @@ export default async function Home() {
   const { user } = await onAuthencticateUser();
 
   if (!user) {
-    redirect("/log-in");
+    redirect("/sign-in");
   } else {
     redirect("/dashboard");
   }
