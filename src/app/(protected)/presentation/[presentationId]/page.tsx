@@ -8,7 +8,7 @@ import { useTheme } from "next-themes";
 import { redirect, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { DNDProvider } from "react-dnd";
+import { DndProvider } from "react-dnd";
 
 type Props = {
   props: string;
@@ -68,7 +68,7 @@ const Page = ({ props }: Props) => {
     );
   }
 
-  return <DNDProvider></DNDProvider>;
+  return <DndProvider></DndProvider>;
 };
 
 export default Page;

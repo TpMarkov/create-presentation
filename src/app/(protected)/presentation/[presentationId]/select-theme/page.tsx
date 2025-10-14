@@ -1,8 +1,7 @@
-import React from "react";
-import ThemePreview from "./_components/ThemePreview/ThemePreview";
+import ThemePreview from "./_components/ThemePreview";
 
-const SelectThemePage = () => {
-  return <ThemePreview></ThemePreview>;
+const Page = () => {
+  return <ThemePreview />;
 };
 
-export default SelectThemePage;
+export default Page;

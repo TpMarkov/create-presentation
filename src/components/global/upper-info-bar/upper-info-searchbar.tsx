@@ -10,12 +10,12 @@ const Searchbar = () => {
       <Input
         type="text"
         placeholder="Search by title..."
-        className="pl-10 pr-4 bg-transparent border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-sm"
+        className="pl-10 pr-4 bg-transparent border-none shadow-none dark:bg-transparent outline-none focus-visible:ring-0 focus-visible:ring-offset-0 text-sm"
       />
       <Button
         size="sm"
         variant="ghost"
-        className="ml-2 rounded-full hover:bg-muted-foreground/10"
+        className="ml-2 rounded-full hover:bg-muted-foreground/10 shadow-none"
       >
         Go
       </Button>

@@ -4,37 +4,47 @@ import { useSlideStore } from "@/store/useSlideStore";
 import { redirect, useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAnimation } from "framer-motion";
+import { themes } from "@/lib/constants";
 import { Theme } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { ArrowRightLeftIcon } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { ArrowLeftIcon } from "lucide-react";
+import ThemeCard from "./ThemeCard";
 
-type Props = {};
-
-const ThemePreview = (props: Props) => {
+const ThemePreview = () => {
   const params = useParams();
   const router = useRouter();
   const controls = useAnimation();
-  const { currentTheme, setCurrentTheme, project } = useSlideStore();
+  const { project, currentTheme, setCurrentTheme } = useSlideStore();
   const [selectedTheme, setSelectedTheme] = useState<Theme>(currentTheme);
 
   useEffect(() => {
     if (project?.slides) {
       redirect(`/presentation/${params.presentationId}`);
     }
-  }, [project, params.presentationId]);
+  }, [project]);
 
+  // Start the animation
   useEffect(() => {
     controls.start("visible");
   }, [controls, selectedTheme]);
 
-  const leftCard = (
-    <div className="space-4">
+  const leftCardContent = (
+    <div className="space-y-4">
       <div
         className="rounded-xl p-6"
         style={{ backgroundColor: selectedTheme.accentColor + "10" }}
       >
-        <h3 className="text-xl font-semibold mb-4">Quick Start Guide</h3>
-        <ol className="list-decimal list-inside space-y-2">
+        <h3
+          className="text-xl font-semibold mb-4"
+          style={{ color: selectedTheme.accentColor }}
+        >
+          Quick Start Guide
+        </h3>
+        <ol
+          className="list-decimal list-inside spce-y-2"
+          style={{ color: selectedTheme.accentColor }}
+        >
           <li>Choose a theme</li>
           <li>Customize colors and fonts</li>
           <li>Add your content</li>
@@ -42,10 +52,10 @@ const ThemePreview = (props: Props) => {
         </ol>
       </div>
       <Button
-        className="w-full h-12 text-lg font-medium"
+        className="w-full h-12 text-lh font-medium"
         style={{
           backgroundColor: selectedTheme.accentColor,
-          color: selectedTheme.accentColor,
+          color: selectedTheme.fontColor,
         }}
       >
         Get Started
@@ -57,7 +67,7 @@ const ThemePreview = (props: Props) => {
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div
-          className="rounded-xl"
+          className="rounded-xl p-6"
           style={{ backgroundColor: selectedTheme.accentColor + "10" }}
         >
           <p style={{ color: selectedTheme.accentColor }}>
@@ -65,7 +75,7 @@ const ThemePreview = (props: Props) => {
           </p>
         </div>
         <div
-          className="rounded-xl"
+          className="rounded-xl p-6"
           style={{ backgroundColor: selectedTheme.accentColor + "10" }}
         >
           <p style={{ color: selectedTheme.accentColor }}>
@@ -75,23 +85,23 @@ const ThemePreview = (props: Props) => {
       </div>
       <div className="flex flex-wrap gap-4">
         <Button
-          className="w-full h-12 text-lg font-medium"
+          className="h-12 px-6 text-lg font-medium"
           style={{
             backgroundColor: selectedTheme.accentColor,
-            color: selectedTheme.accentColor,
+            color: selectedTheme.fontColor,
           }}
         >
-          Primary button
+          Primary Buttton
         </Button>
         <Button
           variant="outline"
-          className="w-full h-12 text-lg font-medium"
+          className="h-12 px-6 text-lg font-medium"
           style={{
             borderColor: selectedTheme.accentColor,
-            color: selectedTheme.accentColor,
+            color: selectedTheme.fontColor,
           }}
         >
-          Secondary button
+          Secondary Button
         </Button>
       </div>
     </div>
@@ -100,12 +110,12 @@ const ThemePreview = (props: Props) => {
   const rightCardContent = (
     <div className="space-y-4">
       <div
-        style={{ backgroundColor: selectedTheme.accentColor + "10" }}
         className="rounded-xl p-6"
+        style={{ backgroundColor: selectedTheme.accentColor + "10" }}
       >
         <h3
-          style={{ color: selectedTheme.accentColor }}
           className="text-xl font-semibold mb-4"
+          style={{ color: selectedTheme.accentColor }}
         >
           Theme Features
         </h3>
@@ -115,7 +125,7 @@ const ThemePreview = (props: Props) => {
         >
           <li>Responsive design</li>
           <li>Dark and Light modes</li>
-          <li>Custom color schemes</li>
+          <li>Custom color schemas</li>
           <li>Accessibility optimized</li>
         </ul>
       </div>
@@ -124,7 +134,7 @@ const ThemePreview = (props: Props) => {
         className="w-full h-12 text-lg font-medium"
         style={{
           borderColor: selectedTheme.accentColor,
-          color: selectedTheme.accentColor,
+          color: selectedTheme.fontColor,
         }}
       >
         Explore Features
@@ -134,7 +144,7 @@ const ThemePreview = (props: Props) => {
 
   return (
     <div
-      className="h-full w-full flex"
+      className="h-screen w-full flex"
       style={{
         backgroundColor: selectedTheme.backgroundColor,
         color: selectedTheme.accentColor,
@@ -145,21 +155,32 @@ const ThemePreview = (props: Props) => {
         <div className="p-12 flex flex-col items-center min-h-screen">
           <Button
             variant="outline"
-            className="mb-12 self-start"
+            className="mb-12 selft-start"
             size="lg"
             style={{
               backgroundColor: selectedTheme.accentColor + "10",
               color: selectedTheme.accentColor,
               borderColor: selectedTheme.accentColor + "20",
             }}
-            onClick={() => router.push("/create-page")}
+            onClick={() => router.push(`/create-page`)}
           >
-            <ArrowRightLeftIcon className="mr-2 h-5 w-5" />
+            <ArrowLeftIcon />
             Back
           </Button>
+          <div className="w-full flex justify-center items-center relative flex-grow">
+            <ThemeCard
+              title="Quick Start"
+              theme={selectedTheme}
+              controls={controls}
+              content={leftCardContent}
+              description="Get up and running in no time"
+              variant="left"
+            />
+          </div>
         </div>
       </div>
     </div>
   );
 };
+
 export default ThemePreview;
