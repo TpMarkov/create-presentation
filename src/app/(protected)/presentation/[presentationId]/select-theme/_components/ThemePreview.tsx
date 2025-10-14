@@ -4,12 +4,13 @@ import { useSlideStore } from "@/store/useSlideStore";
 import { redirect, useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAnimation } from "framer-motion";
-import { themes } from "@/lib/constants";
+import { images, themes } from "@/lib/constants";
 import { Theme } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeftIcon } from "lucide-react";
 import ThemeCard from "./ThemeCard";
+import ThemePicker from "./ThemePicker";
 
 const ThemePreview = () => {
   const params = useParams();
@@ -28,6 +29,11 @@ const ThemePreview = () => {
   useEffect(() => {
     controls.start("visible");
   }, [controls, selectedTheme]);
+
+  const applyTheme = (theme: Theme) => {
+    setSelectedTheme(theme);
+    setCurrentTheme(theme);
+  };
 
   const leftCardContent = (
     <div className="space-y-4">
@@ -175,10 +181,34 @@ const ThemePreview = () => {
               content={leftCardContent}
               description="Get up and running in no time"
               variant="left"
+              image="https://images.unsplash.com/photo-1665606338688-5faed6cdef65?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1470"
+            />
+            <ThemeCard
+              title="Quick Start"
+              theme={selectedTheme}
+              controls={controls}
+              content={rightCardContent}
+              description="Get up and running in no time"
+              variant="right"
+              image="https://plus.unsplash.com/premium_photo-1681398842383-25f5613873b1?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1374"
+            />
+            <ThemeCard
+              title="Quick Start"
+              theme={selectedTheme}
+              controls={controls}
+              content={mainContent}
+              description="Get up and running in no time"
+              variant="main"
+              image="https://images.unsplash.com/photo-1502680390469-be75c86b636f?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1470"
             />
           </div>
         </div>
       </div>
+      <ThemePicker
+        selectedTheme={selectedTheme}
+        themes={themes}
+        onThemeSelect={applyTheme}
+      />
     </div>
   );
 };

@@ -4,7 +4,8 @@ import {
   SettingsIcon,
   TrashIcon,
 } from "lucide-react";
-import { Theme } from "./types";
+import { Slide, Theme } from "./types";
+import { v4 as uuidv4 } from "uuid";
 
 export const data = {
   user: {
@@ -54,7 +55,7 @@ export const itemVariants = {
 export const themes: Theme[] = [
   {
     name: "Default",
-    fontFamily: "'Inter',sans-serif",
+    fontFamily: "'Inter', sans-serif",
     fontColor: "#000000",
     backgroundColor: "#f0f0f0",
     accentColor: "#3b82f6",
@@ -66,13 +67,117 @@ export const themes: Theme[] = [
     name: "Dark Elegance",
     fontFamily: "'Playfair Display', serif",
     fontColor: "#ffffff",
-    backgroundColor: "#1a1a1a",
-    slideBackgroundColor: "#2c2c2c",
+    backgroundColor: "#121212",
+    slideBackgroundColor: "#2a2a2a",
     accentColor: "#ffd700",
-    gradientBackground: "linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%)",
-    navbarColor: "#2c2c2c",
-    slidebarColor: "#1a1a1a",
+    gradientBackground: "linear-gradient(135deg, #2a2a2a 0%, #121212 100%)",
+    navbarColor: "#2a2a2a",
+    sidebarColor: "#121212",
     type: "dark",
+  },
+  {
+    name: "Aurora Drift",
+    fontFamily: "'Poppins', sans-serif",
+    fontColor: "#e0f2fe",
+    backgroundColor: "#0f172a",
+    slideBackgroundColor: "#1e3a8a",
+    accentColor: "#38bdf8",
+    gradientBackground:
+      "linear-gradient(135deg, #0f172a 0%, #1e3a8a 35%, #38bdf8 100%)",
+    navbarColor: "#1e3a8a",
+    sidebarColor: "#0f172a",
+    type: "dark",
+  },
+  {
+    name: "Solar Dawn",
+    fontFamily: "'Inter', sans-serif",
+    fontColor: "#1a1a1a",
+    backgroundColor: "#fff7e6",
+    slideBackgroundColor: "#ffe0b2",
+    accentColor: "#f59e0b",
+    gradientBackground:
+      "linear-gradient(135deg, #fff7e6 0%, #ffedd5 40%, #fbbf24 100%)",
+    navbarColor: "#ffffff",
+    sidebarColor: "#ffedd5",
+    type: "light",
+  },
+  {
+    name: "Cyber Aurora",
+    fontFamily: "'Orbitron', sans-serif",
+    fontColor: "#e0e0e0",
+    backgroundColor: "#000000",
+    slideBackgroundColor: "#111827",
+    accentColor: "#22d3ee",
+    gradientBackground:
+      "linear-gradient(135deg, #000000 0%, #1e293b 50%, #22d3ee 100%)",
+    navbarColor: "#111827",
+    sidebarColor: "#000000",
+    type: "dark",
+  },
+  {
+    name: "Velvet Sunset",
+    fontFamily: "'Nunito', sans-serif",
+    fontColor: "#2e2e2e",
+    backgroundColor: "#fff5f7",
+    slideBackgroundColor: "#ffe4e6",
+    accentColor: "#fb7185",
+    gradientBackground:
+      "linear-gradient(135deg, #ffe4e6 0%, #fecdd3 40%, #fda4af 100%)",
+    navbarColor: "#ffffff",
+    sidebarColor: "#ffe4e6",
+    type: "light",
+  },
+  {
+    name: "Galactic Violet",
+    fontFamily: "'DM Sans', sans-serif",
+    fontColor: "#e5e7eb",
+    backgroundColor: "#1e1b4b",
+    slideBackgroundColor: "#312e81",
+    accentColor: "#a855f7",
+    gradientBackground:
+      "linear-gradient(135deg, #312e81 0%, #4c1d95 50%, #7e22ce 100%)",
+    navbarColor: "#312e81",
+    sidebarColor: "#1e1b4b",
+    type: "dark",
+  },
+  {
+    name: "Mint Horizon",
+    fontFamily: "'Manrope', sans-serif",
+    fontColor: "#1e293b",
+    backgroundColor: "#d1fae5",
+    slideBackgroundColor: "#a7f3d0",
+    accentColor: "#10b981",
+    gradientBackground:
+      "linear-gradient(135deg, #d1fae5 0%, #6ee7b7 40%, #10b981 100%)",
+    navbarColor: "#ffffff",
+    sidebarColor: "#a7f3d0",
+    type: "light",
+  },
+  {
+    name: "Obsidian Flame",
+    fontFamily: "'Raleway', sans-serif",
+    fontColor: "#f5f5f5",
+    backgroundColor: "#1a1a1a",
+    slideBackgroundColor: "#2d0000",
+    accentColor: "#ef4444",
+    gradientBackground:
+      "linear-gradient(135deg, #000000 0%, #2d0000 40%, #7f1d1d 100%)",
+    navbarColor: "#2d0000",
+    sidebarColor: "#1a1a1a",
+    type: "dark",
+  },
+  {
+    name: "Iridescent Sky",
+    fontFamily: "'Urbanist', sans-serif",
+    fontColor: "#1f2937",
+    backgroundColor: "#e0f2fe",
+    slideBackgroundColor: "#bae6fd",
+    accentColor: "#6366f1",
+    gradientBackground:
+      "linear-gradient(135deg, #bae6fd 0%, #c7d2fe 50%, #fbcfe8 100%)",
+    navbarColor: "#ffffff",
+    sidebarColor: "#bae6fd",
+    type: "light",
   },
   {
     name: "Ocean Breeze",
@@ -83,7 +188,7 @@ export const themes: Theme[] = [
     accentColor: "#0288d1",
     gradientBackground: "linear-gradient(135deg, #b2ebf2 0%, #e0f7fa 100%)",
     navbarColor: "#ffffff",
-    slidebarColor: "#b2ebf2",
+    sidebarColor: "#b2ebf2",
     type: "light",
   },
   {
@@ -95,7 +200,7 @@ export const themes: Theme[] = [
     accentColor: "#6366f1",
     gradientBackground: "linear-gradient(135deg, #312e81 0%, #1e1b4b 100%)",
     navbarColor: "#312e81",
-    slidebarColor: "#1e1b4b",
+    sidebarColor: "#1e1b4b",
     type: "dark",
   },
   {
@@ -107,7 +212,7 @@ export const themes: Theme[] = [
     accentColor: "#f97316",
     gradientBackground: "linear-gradient(135deg, #ffe4c4 0%, #fff7ed 100%)",
     navbarColor: "#ffffff",
-    slidebarColor: "#ffe4c4",
+    sidebarColor: "#ffe4c4",
     type: "light",
   },
   {
@@ -119,7 +224,7 @@ export const themes: Theme[] = [
     accentColor: "#00ffff",
     gradientBackground: "linear-gradient(135deg, #1a1a1a 0%, #000000 100%)",
     navbarColor: "#1a1a1a",
-    slidebarColor: "#0a0a0a",
+    sidebarColor: "#0a0a0a",
     type: "dark",
   },
   {
@@ -131,7 +236,7 @@ export const themes: Theme[] = [
     accentColor: "#2e7d32",
     gradientBackground: "linear-gradient(135deg, #d8e9db 0%, #ecf4ee 100%)",
     navbarColor: "#ffffff",
-    slidebarColor: "#d8e9db",
+    sidebarColor: "#d8e9db",
     type: "light",
   },
   {
@@ -143,7 +248,7 @@ export const themes: Theme[] = [
     accentColor: "#ff4d4d",
     gradientBackground: "linear-gradient(135deg, #3c0000 0%, #2b0000 100%)",
     navbarColor: "#3c0000",
-    slidebarColor: "#2b0000",
+    sidebarColor: "#2b0000",
     type: "dark",
   },
   {
@@ -155,7 +260,7 @@ export const themes: Theme[] = [
     accentColor: "#a855f7",
     gradientBackground: "linear-gradient(135deg, #e9d5ff 0%, #f3e8ff 100%)",
     navbarColor: "#ffffff",
-    slidebarColor: "#e9d5ff",
+    sidebarColor: "#e9d5ff",
     type: "light",
   },
   {
@@ -167,7 +272,7 @@ export const themes: Theme[] = [
     accentColor: "#5f6368",
     gradientBackground: "linear-gradient(135deg, #2d2f33 0%, #202124 100%)",
     navbarColor: "#2d2f33",
-    slidebarColor: "#202124",
+    sidebarColor: "#202124",
     type: "dark",
   },
   {
@@ -179,7 +284,7 @@ export const themes: Theme[] = [
     accentColor: "#ff8a65",
     gradientBackground: "linear-gradient(135deg, #ffe1c6 0%, #fff0e1 100%)",
     navbarColor: "#ffffff",
-    slidebarColor: "#ffe1c6",
+    sidebarColor: "#ffe1c6",
     type: "light",
   },
   {
@@ -191,7 +296,7 @@ export const themes: Theme[] = [
     accentColor: "#10b981",
     gradientBackground: "linear-gradient(135deg, #064e3b 0%, #052e16 100%)",
     navbarColor: "#064e3b",
-    slidebarColor: "#052e16",
+    sidebarColor: "#052e16",
     type: "dark",
   },
   {
@@ -203,7 +308,7 @@ export const themes: Theme[] = [
     accentColor: "#38bdf8",
     gradientBackground: "linear-gradient(135deg, #dbeafe 0%, #f0faff 100%)",
     navbarColor: "#ffffff",
-    slidebarColor: "#dbeafe",
+    sidebarColor: "#dbeafe",
     type: "light",
   },
   {
@@ -215,7 +320,7 @@ export const themes: Theme[] = [
     accentColor: "#ffcc00",
     gradientBackground: "linear-gradient(135deg, #1c1c1c 0%, #0d0d0d 100%)",
     navbarColor: "#1c1c1c",
-    slidebarColor: "#0d0d0d",
+    sidebarColor: "#0d0d0d",
     type: "dark",
   },
   {
@@ -227,7 +332,7 @@ export const themes: Theme[] = [
     accentColor: "#fb7185",
     gradientBackground: "linear-gradient(135deg, #ffe4e6 0%, #fff5f5 100%)",
     navbarColor: "#ffffff",
-    slidebarColor: "#ffe4e6",
+    sidebarColor: "#ffe4e6",
     type: "light",
   },
   {
@@ -239,7 +344,7 @@ export const themes: Theme[] = [
     accentColor: "#8b5cf6",
     gradientBackground: "linear-gradient(135deg, #18181b 0%, #0b0b0d 100%)",
     navbarColor: "#18181b",
-    slidebarColor: "#0b0b0d",
+    sidebarColor: "#0b0b0d",
     type: "dark",
   },
   {
@@ -251,7 +356,7 @@ export const themes: Theme[] = [
     accentColor: "#0d9488",
     gradientBackground: "linear-gradient(135deg, #b2f5ea 0%, #e6fffa 100%)",
     navbarColor: "#ffffff",
-    slidebarColor: "#b2f5ea",
+    sidebarColor: "#b2f5ea",
     type: "light",
   },
   {
@@ -263,7 +368,7 @@ export const themes: Theme[] = [
     accentColor: "#a855f7",
     gradientBackground: "linear-gradient(135deg, #581c87 0%, #3b0764 100%)",
     navbarColor: "#581c87",
-    slidebarColor: "#3b0764",
+    sidebarColor: "#3b0764",
     type: "dark",
   },
   {
@@ -275,7 +380,7 @@ export const themes: Theme[] = [
     accentColor: "#fbbf24",
     gradientBackground: "linear-gradient(135deg, #ffecb3 0%, #fff8e1 100%)",
     navbarColor: "#ffffff",
-    slidebarColor: "#ffecb3",
+    sidebarColor: "#ffecb3",
     type: "light",
   },
   {
@@ -287,7 +392,7 @@ export const themes: Theme[] = [
     accentColor: "#22d3ee",
     gradientBackground: "linear-gradient(135deg, #0f172a 0%, #020617 100%)",
     navbarColor: "#0f172a",
-    slidebarColor: "#020617",
+    sidebarColor: "#020617",
     type: "dark",
   },
   {
@@ -299,7 +404,7 @@ export const themes: Theme[] = [
     accentColor: "#f472b6",
     gradientBackground: "linear-gradient(135deg, #ffe4e6 0%, #fff1f2 100%)",
     navbarColor: "#ffffff",
-    slidebarColor: "#ffe4e6",
+    sidebarColor: "#ffe4e6",
     type: "light",
   },
   {
@@ -311,7 +416,7 @@ export const themes: Theme[] = [
     accentColor: "#9ca3af",
     gradientBackground: "linear-gradient(135deg, #1e1e1e 0%, #121212 100%)",
     navbarColor: "#1e1e1e",
-    slidebarColor: "#121212",
+    sidebarColor: "#121212",
     type: "dark",
   },
 ];
@@ -335,5 +440,235 @@ export const CreatePageCard = [
     highlightedText: "Scratch",
     description: "Write a prompt and leave everything else for use to handle",
     type: "create-scratch",
+  },
+];
+
+export const existingLayouts: Slide[] = [
+  // 1️⃣ Title Slide
+  {
+    id: uuidv4(),
+    slideName: "Title Slide",
+    type: "resizable-column",
+    slideOrder: 1,
+    className:
+      "flex flex-col justify-center items-center h-full bg-gradient-to-br from-blue-50 to-blue-100",
+    content: {
+      id: uuidv4(),
+      type: "column",
+      name: "Main Column",
+      content: [
+        {
+          id: uuidv4(),
+          type: "heading1",
+          name: "Title",
+          content: "",
+          placeholder: "Presentation Title",
+          className: "text-center font-bold text-5xl mb-4",
+        },
+        {
+          id: uuidv4(),
+          type: "heading3",
+          name: "Subtitle",
+          content: "",
+          placeholder: "Subtitle or Tagline",
+          className: "text-center text-xl text-gray-600",
+        },
+      ],
+    },
+  },
+
+  // 2️⃣ Text and Image (Side by Side)
+  {
+    id: uuidv4(),
+    slideName: "Text and Image",
+    type: "resizable-column",
+    slideOrder: 2,
+    className: "grid grid-cols-2 gap-4 p-6",
+    content: {
+      id: uuidv4(),
+      type: "multiColumn",
+      name: "Two Columns",
+      content: [
+        {
+          id: uuidv4(),
+          type: "column",
+          name: "Text Column",
+          content: [
+            {
+              id: uuidv4(),
+              type: "heading2",
+              name: "Section Title",
+              content: "",
+              placeholder: "Heading 2",
+            },
+            {
+              id: uuidv4(),
+              type: "paragraph",
+              name: "Paragraph",
+              content: "",
+              placeholder: "Write your key points here...",
+            },
+          ],
+        },
+        {
+          id: uuidv4(),
+          type: "column",
+          name: "Image Column",
+          content: [
+            {
+              id: uuidv4(),
+              type: "image",
+              name: "Image",
+              content: "",
+              alt: "A descriptive illustration representing the topic",
+              className: "rounded-lg shadow-md",
+            },
+          ],
+        },
+      ],
+    },
+  },
+
+  // 3️⃣ Quote / Callout Slide
+  {
+    id: uuidv4(),
+    slideName: "Quote Slide",
+    type: "resizable-column",
+    slideOrder: 3,
+    className:
+      "flex flex-col justify-center items-center text-center bg-gray-50",
+    content: {
+      id: uuidv4(),
+      type: "column",
+      name: "Main Column",
+      content: [
+        {
+          id: uuidv4(),
+          type: "blockquote",
+          name: "Quote",
+          content: "",
+          placeholder: "“Your inspirational quote goes here.”",
+          className: "italic text-2xl font-serif mb-4",
+        },
+        {
+          id: uuidv4(),
+          type: "paragraph",
+          name: "Author",
+          content: "",
+          placeholder: "— Author Name",
+          className: "text-gray-600",
+        },
+      ],
+    },
+  },
+
+  // 4️⃣ Bulleted List Slide
+  {
+    id: uuidv4(),
+    slideName: "Bulleted List",
+    type: "resizable-column",
+    slideOrder: 4,
+    className: "p-8",
+    content: {
+      id: uuidv4(),
+      type: "column",
+      name: "Main Column",
+      content: [
+        {
+          id: uuidv4(),
+          type: "heading2",
+          name: "Heading",
+          content: "",
+          placeholder: "Main Topic",
+        },
+        {
+          id: uuidv4(),
+          type: "bulletedList",
+          name: "Bullet Points",
+          content: [],
+          placeholder: "Add your list items here...",
+        },
+      ],
+    },
+  },
+
+  // 5️⃣ Image Grid Slide
+  {
+    id: uuidv4(),
+    slideName: "Image Grid",
+    type: "resizable-column",
+    slideOrder: 5,
+    className: "grid grid-cols-3 gap-4 p-6",
+    content: {
+      id: uuidv4(),
+      type: "multiColumn",
+      name: "Image Grid",
+      content: Array.from({ length: 3 }).map(() => ({
+        id: uuidv4(),
+        type: "image",
+        name: "Grid Image",
+        content: "",
+        alt: "Visual representation related to the topic",
+        className: "rounded-lg shadow-md w-full h-auto",
+      })),
+    },
+  },
+
+  // 6️⃣ Comparison Columns
+  {
+    id: uuidv4(),
+    slideName: "Comparison Columns",
+    type: "resizable-column",
+    slideOrder: 6,
+    className: "grid grid-cols-2 gap-6 p-6",
+    content: {
+      id: uuidv4(),
+      type: "multiColumn",
+      name: "Comparison",
+      content: [
+        {
+          id: uuidv4(),
+          type: "column",
+          name: "Left Column",
+          content: [
+            {
+              id: uuidv4(),
+              type: "heading3",
+              name: "Option A",
+              content: "",
+              placeholder: "Option A Title",
+            },
+            {
+              id: uuidv4(),
+              type: "paragraph",
+              name: "Details A",
+              content: "",
+              placeholder: "Details about Option A...",
+            },
+          ],
+        },
+        {
+          id: uuidv4(),
+          type: "column",
+          name: "Right Column",
+          content: [
+            {
+              id: uuidv4(),
+              type: "heading3",
+              name: "Option B",
+              content: "",
+              placeholder: "Option B Title",
+            },
+            {
+              id: uuidv4(),
+              type: "paragraph",
+              name: "Details B",
+              content: "",
+              placeholder: "Details about Option B...",
+            },
+          ],
+        },
+      ],
+    },
   },
 ];

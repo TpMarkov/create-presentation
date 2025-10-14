@@ -11,6 +11,7 @@ type Props = {
   variant: "left" | "right" | "main";
   theme: Theme;
   controls: AnimationControls;
+  image?: string;
 };
 
 const ThemeCard = ({
@@ -20,6 +21,7 @@ const ThemeCard = ({
   variant,
   theme,
   controls,
+  image,
 }: Props) => {
   const variants = {
     left: {
@@ -89,7 +91,10 @@ const ThemeCard = ({
           </CardContent>
           <div className="relative w-full md:w-1/2 h-80 md:h-auto overflow-hidden">
             <Image
-              src="https://plus.unsplash.com/premium_photo-1759354756760-b4416a802588?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=764"
+              src={
+                image ||
+                "https://images.unsplash.com/photo-1723579632212-6736eaef0eca?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTY5fHxibHVlJTIwYW5kJTIwd2hpdGV8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&q=60&w=400"
+              }
               alt="Theme preview image"
               layout="fill"
               objectFit="cover"
