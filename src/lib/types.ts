@@ -30,7 +30,7 @@ export interface ContentItem {
   restrictialColumns?: number;
   restrictToDrop?: boolean;
   clumns?: number;
-  placeholede?: string;
+  placeholeder?: string;
   className?: string;
   alt?: string;
   callOutType?: "success" | "warning" | "info" | "question" | "caution";
