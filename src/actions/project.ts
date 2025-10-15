@@ -24,7 +24,7 @@ export const getAllProjects = async () => {
       return { status: 404, error: "No projects found" };
     }
 
-    return { status: 200, projects: projects };
+    return { status: 200, data: projects };
   } catch (error) {
     console.error("Error:", error);
     return { status: 500 };

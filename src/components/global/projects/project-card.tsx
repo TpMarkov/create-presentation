@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { itemVariants, themes } from "@/lib/constants";
 import { useSlideStore } from "@/store/useSlideStore";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import ThumnailPreview from "./thumnail-preview";
 import { timeAgo } from "@/lib/utils";
 import AlertDialogBox from "../alert-dialog";
@@ -118,9 +118,10 @@ const ProjectCard = ({
   return (
     <motion.div
       variants={itemVariants}
-      className={`group w-full flex fled-col gap-y-3 rounded-xl p-3 transition-colors ${
+      className={`group w-full flex fled-col hover:cursor-pointer gap-y-3 rounded-xl p-3 transition-colors ${
         !isDeleted && "hover:bg-muted/50"
       }`}
+      onClick={() => redirect(`/presentation/${projectId}`)}
     >
       <div
         className="relative aspec-[16/10] overflow-hidden rounded-lg cursor-pointer"

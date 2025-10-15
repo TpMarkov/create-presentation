@@ -3,6 +3,7 @@ import { containerVariants } from "@/lib/constants";
 import { Project } from "@prisma/client";
 import { motion } from "framer-motion";
 import ProjectCard from "./project-card";
+import { redirect } from "next/navigation";
 
 type Props = {
   projects: Project[];
