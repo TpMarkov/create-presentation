@@ -1,4 +1,5 @@
-import { generateLayots } from "@/actions/chatgpt";
+"use client";
+import { generateLayouts } from "@/actions/chatgpt";
 import { Button } from "@/components/ui/button";
 import { Theme } from "@/lib/types";
 import { useSlideStore } from "@/store/useSlideStore";
@@ -23,41 +24,41 @@ const ThemePicker = ({ selectedTheme, onThemeSelect, themes }: Props) => {
 
   const handleGenerateLayouts = async () => {
     setLoading(true);
-
     if (!selectedTheme) {
       toast.error("Error", {
-        description: "Please select a theme",
+        description: "Please select a theme before generating layouts.",
       });
+      setLoading(false);
       return;
     }
-
+    debugger;
     if (project?.id === "") {
-      toast.error("Error", {
-        description: "Please create a project first",
+      toast.error("Error:", {
+        description: "Project ID is missing.",
       });
+      setLoading(false);
       router.push("/create-page");
       return;
     }
 
     try {
-      const res = await generateLayots(
+      const res = await generateLayouts(
         params.presentationId as string,
-        currentTheme.name
+        selectedTheme.name
       );
+      console.log("Generate layouts response:", res); // ✅ log for debugging
 
-      if (res.status !== 200 && !res?.data) {
-        throw new Error("Failed to generate layouts.");
+      if (res.status !== 200) {
+        throw new Error(res.error || "Failed to generate layouts");
       }
+
       toast.success("Success", {
         description: "Layouts generated successfully",
       });
-
-      router.push(`/presentation/${project?.id}`);
       setSlides(res.data);
-    } catch (err) {
-      toast.error("Error", {
-        description: "Failed to generate layouts",
-      });
+      router.push(`/presentation/${project?.id}`);
+    } catch (error: any) {
+      toast.error("Error", { description: error.message });
     } finally {
       setLoading(false);
     }
@@ -68,7 +69,7 @@ const ThemePicker = ({ selectedTheme, onThemeSelect, themes }: Props) => {
       className="w-[400px] sticky top-0 h-screen flex flex-col"
       style={{
         backgroundColor:
-          selectedTheme.slidebarColor || selectedTheme.backgroundColor,
+          selectedTheme.sidebarColor || selectedTheme.backgroundColor,
         borderLeft: `1px solid ${selectedTheme.accentColor}20`,
       }}
     >

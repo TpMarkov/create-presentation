@@ -5,7 +5,6 @@ import { client } from "@/lib/prisma";
 import { v4 as uuidv4 } from "uuid";
 import { ContentItem, Slide } from "@/lib/types";
 import { existingLayouts } from "@/lib/constants";
-import { Images } from "lucide-react";
 
 const openai = new OpenAI({
   apiKey: process.env.OPEN_AI_KEY,
@@ -73,24 +72,6 @@ export const generateCreativePrompt = async (userPrompt: string) => {
   }
 };
 
-const findImageComponents = (layout: ContentItem): ContentItem[] => {
-  const images = [];
-
-  if (layout.type === "image") {
-    images.push(layout);
-  }
-
-  if (Array.isArray(layout.content)) {
-    layout.content.forEach((child) => {
-      images.push(...findImageComponents(child as ContentItem));
-    });
-  } else if (layout.content && typeof layout.content === "object") {
-    images.push(...findImageComponents(layout.content));
-  }
-
-  return images;
-};
-
 const generateImageUrl = async (prompt: string): Promise<string> => {
   try {
     const improvedPrompt = `
@@ -125,7 +106,22 @@ const generateImageUrl = async (prompt: string): Promise<string> => {
     return "https://via.placeholder.com/1024";
   }
 };
+const findImageComponents = (layout: ContentItem): ContentItem[] => {
+  const images = [];
 
+  if (layout.type === "image") {
+    images.push(layout);
+  }
+  if (Array.isArray(layout.content)) {
+    layout.content.forEach((child) => {
+      images.push(...findImageComponents(child as ContentItem));
+    });
+  } else if (layout.content && typeof layout.content === "object") {
+    images.push(...findImageComponents(layout.content));
+  }
+
+  return images;
+};
 const replaceImagePlaceholders = async (layout: Slide) => {
   const imageComponents = findImageComponents(layout.content);
   console.log("🟢 Found image components:", imageComponents);
@@ -138,14 +134,15 @@ const replaceImagePlaceholders = async (layout: Slide) => {
 };
 
 export const generateLayoutsJson = async (outlineArray: string[]) => {
-  const prompt = `You are a highly creative AI that generates JSON-based layouts for presentations. I will provide you with an array of outlines, and for each outline, you must generate a unique and creative layout. Use the existing layouts as examples for structure and design, and generate unique designs based on the provided outline.
+  const prompt = `
+  You are a highly creative AI that generates JSON-based layouts for presentations. I will provide you with an array of outlines, and for each outline, you must generate a unique and creative layout. Use the existing layouts as examples for structure and design, and generate unique designs based on the provided outline.
   
   ### Guidelines:
   1. Write layouts based on the specific outline provided.
-  2. Use diverse and engagng designs, ensuring each layout is unique.
-  3. Adthere to the structure of existing layouts but add new styles or components if needed.
-  4. Fill placeholder data into content fields where required.
-  5. Generate unique image placeholders for the 'content' property of image components and also all text according to the outline.
+  2. Use diverse and engaging designs, ensuring each layout is unique.
+  3. Adhere to the structure of existing layouts but feel free to add new styles or components if needed.
+  4. Fill in placeholder data in all content fields where required.
+  5. Generate unique image placeholders for the 'content' property of image components, and also generate all text according to the outline.
   6. Ensure proper formatting and schema alignment for the output JSON.
 
   ### Example Layouts:
@@ -157,19 +154,20 @@ export const generateLayoutsJson = async (outlineArray: string[]) => {
   For each entry in the outline array, generate:
   - A unique JSON layout with creative design.
   - Properly filled content, including placeholders for image components.
-  - Clear and well-structured JSON data. For Images
-  - The alt text should describe the image clearly and concisely.
-  - Focus on the main subject(s) of the image and any relevant details such as colors, shapes, people, or objects.
+  - Clear and well-structured JSON data.
+  - For images, the alt text should describe the image clearly and concisely.
+  - Focus on the main subject(s) of the image and include any relevant details such as colors, shapes, people, or objects.
   - Ensure the alt text aligns with the context of the presentation slide it will be used on (e.g., professional, educational, business-related).
   - Avoid using terms like "image of" or "picture of," and instead focus directly on the content and meaning.
   
   Output the layouts in JSON format. Ensure there are no duplicate layouts across the array.
-  `;
+`;
 
   try {
-    console.log("🟢 Generating layouts...");
+    console.log("🟢Generating layouts...");
+
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-2024-11-20",
+      model: "chatgpt-4o-latest",
       messages: [
         {
           role: "system",
@@ -183,48 +181,55 @@ export const generateLayoutsJson = async (outlineArray: string[]) => {
       max_tokens: 5000,
       temperature: 0.7,
     });
-    const responseContent = completion?.choices?.[0]?.message?.content;
 
-    if (!responseContent) return { status: 400, error: "No content granted" };
+    const resposnseContent = completion?.choices?.[0]?.message?.content;
+
+    if (!resposnseContent) {
+      return { status: 400, error: "No content generate" };
+    }
+
     let jsonResponse;
+
     try {
-      jsonResponse = JSON.parse(responseContent.replace(/```json|```/g, ""));
+      jsonResponse = JSON.parse(
+        resposnseContent.replace(/```json|```/g, "").trim()
+      );
       await Promise.all(jsonResponse.map(replaceImagePlaceholders));
     } catch (error) {
-      console.log("🔴 ERROR:", error);
-      throw new Error("Invalid JSON format received from AI");
+      console.error("Error", error);
+      return { status: 500, error: "Internal server error" };
     }
+
     console.log("🟢 Layouts generated successfully");
     return { status: 200, data: jsonResponse };
   } catch (error) {
-    console.error("🔴ERROR:", error);
-    return { status: 500, error: "Internal server error" };
+    console.log("Error", error);
+    return { status: 500, error: "Internal server errror" };
   }
 };
 
-export const generateLayots = async (projectId: string, theme: string) => {
+export const generateLayouts = async (projectId: string, theme: string) => {
   try {
     if (!projectId) {
       return { status: 400, error: "Project ID is required" };
     }
 
     const user = await currentUser();
-    if (!user) {
-      return { status: 403, error: "User not authenticated" };
-    }
 
     const userExist = await client.user.findUnique({
       where: {
-        clerkId: user.id,
+        clerkId: user?.id,
       },
     });
+
+    console.log("🟢 Current user data:", user);
 
     if (!userExist || !userExist.subscription) {
       return {
         status: 403,
         error: !userExist?.subscription
-          ? "User does not have an active subscribtion"
-          : "User not found in the database",
+          ? "User does not have an active subscription"
+          : "User not found in db",
       };
     }
 
@@ -236,9 +241,8 @@ export const generateLayots = async (projectId: string, theme: string) => {
     });
 
     if (!project) {
-      return { status: 404, error: "Project not found" };
+      return { status: 400, error: "Project not found" };
     }
-
     if (!project.outlines || project.outlines.length === 0) {
       return { status: 400, error: "Project does not have any outlines" };
     }
@@ -246,11 +250,13 @@ export const generateLayots = async (projectId: string, theme: string) => {
     const layouts = await generateLayoutsJson(project.outlines);
 
     if (layouts.status !== 200) {
-      return { status: 500, data: layouts };
+      return layouts;
     }
 
     await client.project.update({
-      where: { id: projectId },
+      where: {
+        id: projectId,
+      },
       data: {
         slides: layouts.data,
         themeName: theme,
@@ -259,7 +265,7 @@ export const generateLayots = async (projectId: string, theme: string) => {
 
     return { status: 200, data: layouts.data };
   } catch (error) {
-    console.error("Error:", error);
-    return { status: 500, error: "Internal server error" };
+    console.error("🔴ERROR:", error);
+    return { status: 500, error: "Internal server error", data: [] };
   }
 };

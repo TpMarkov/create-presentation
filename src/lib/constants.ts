@@ -4,7 +4,7 @@ import {
   SettingsIcon,
   TrashIcon,
 } from "lucide-react";
-import { Slide, Theme } from "./types";
+import { ContentType, Slide, Theme } from "./types";
 import { v4 as uuidv4 } from "uuid";
 
 export const data = {
@@ -443,232 +443,260 @@ export const CreatePageCard = [
   },
 ];
 
-export const existingLayouts: Slide[] = [
-  // 1️⃣ Title Slide
-  {
-    id: uuidv4(),
-    slideName: "Title Slide",
-    type: "resizable-column",
-    slideOrder: 1,
-    className:
-      "flex flex-col justify-center items-center h-full bg-gradient-to-br from-blue-50 to-blue-100",
-    content: {
-      id: uuidv4(),
-      type: "column",
-      name: "Main Column",
-      content: [
-        {
-          id: uuidv4(),
-          type: "heading1",
-          name: "Title",
-          content: "",
-          placeholder: "Presentation Title",
-          className: "text-center font-bold text-5xl mb-4",
-        },
-        {
-          id: uuidv4(),
-          type: "heading3",
-          name: "Subtitle",
-          content: "",
-          placeholder: "Subtitle or Tagline",
-          className: "text-center text-xl text-gray-600",
-        },
-      ],
-    },
-  },
+type LayoutComponent = {
+  type: ContentType;
+  content?: string | string[] | { src?: string; alt?: string };
+  style?: Record<string, string>;
+  children?: LayoutComponent[];
+};
 
-  // 2️⃣ Text and Image (Side by Side)
-  {
-    id: uuidv4(),
-    slideName: "Text and Image",
-    type: "resizable-column",
-    slideOrder: 2,
-    className: "grid grid-cols-2 gap-4 p-6",
-    content: {
-      id: uuidv4(),
-      type: "multiColumn",
-      name: "Two Columns",
-      content: [
-        {
-          id: uuidv4(),
-          type: "column",
-          name: "Text Column",
-          content: [
-            {
-              id: uuidv4(),
-              type: "heading2",
-              name: "Section Title",
-              content: "",
-              placeholder: "Heading 2",
-            },
-            {
-              id: uuidv4(),
-              type: "paragraph",
-              name: "Paragraph",
-              content: "",
-              placeholder: "Write your key points here...",
-            },
-          ],
-        },
-        {
-          id: uuidv4(),
-          type: "column",
-          name: "Image Column",
-          content: [
-            {
-              id: uuidv4(),
-              type: "image",
-              name: "Image",
-              content: "",
-              alt: "A descriptive illustration representing the topic",
-              className: "rounded-lg shadow-md",
-            },
-          ],
-        },
-      ],
-    },
-  },
+type Layout = {
+  id: string;
+  name: string;
+  description: string;
+  layoutType: string;
+  components: LayoutComponent[];
+};
 
-  // 3️⃣ Quote / Callout Slide
+export const existingLayouts: Layout[] = [
   {
     id: uuidv4(),
-    slideName: "Quote Slide",
-    type: "resizable-column",
-    slideOrder: 3,
-    className:
-      "flex flex-col justify-center items-center text-center bg-gray-50",
-    content: {
-      id: uuidv4(),
-      type: "column",
-      name: "Main Column",
-      content: [
-        {
-          id: uuidv4(),
-          type: "blockquote",
-          name: "Quote",
-          content: "",
-          placeholder: "“Your inspirational quote goes here.”",
-          className: "italic text-2xl font-serif mb-4",
+    name: "Title Slide",
+    description:
+      "An introductory slide with a centered title, subtitle, and background image.",
+    layoutType: "intro",
+    components: [
+      {
+        type: "title",
+        content: "Welcome to the Future of AI",
+        style: {
+          textAlign: "center",
+          fontSize: "3rem",
+          fontWeight: "bold",
         },
-        {
-          id: uuidv4(),
-          type: "paragraph",
-          name: "Author",
-          content: "",
-          placeholder: "— Author Name",
-          className: "text-gray-600",
+      },
+      {
+        type: "paragraph",
+        content:
+          "Exploring innovation, creativity, and intelligence redefined.",
+        style: {
+          textAlign: "center",
+          fontSize: "1.25rem",
+          color: "#666",
+          marginTop: "1rem",
         },
-      ],
-    },
-  },
-
-  // 4️⃣ Bulleted List Slide
-  {
-    id: uuidv4(),
-    slideName: "Bulleted List",
-    type: "resizable-column",
-    slideOrder: 4,
-    className: "p-8",
-    content: {
-      id: uuidv4(),
-      type: "column",
-      name: "Main Column",
-      content: [
-        {
-          id: uuidv4(),
-          type: "heading2",
-          name: "Heading",
-          content: "",
-          placeholder: "Main Topic",
-        },
-        {
-          id: uuidv4(),
-          type: "bulletedList",
-          name: "Bullet Points",
-          content: [],
-          placeholder: "Add your list items here...",
-        },
-      ],
-    },
-  },
-
-  // 5️⃣ Image Grid Slide
-  {
-    id: uuidv4(),
-    slideName: "Image Grid",
-    type: "resizable-column",
-    slideOrder: 5,
-    className: "grid grid-cols-3 gap-4 p-6",
-    content: {
-      id: uuidv4(),
-      type: "multiColumn",
-      name: "Image Grid",
-      content: Array.from({ length: 3 }).map(() => ({
-        id: uuidv4(),
+      },
+      {
         type: "image",
-        name: "Grid Image",
-        content: "",
-        alt: "Visual representation related to the topic",
-        className: "rounded-lg shadow-md w-full h-auto",
-      })),
-    },
+        content: {
+          alt: "Futuristic neural network visualization with glowing blue nodes and data flow lines",
+          src: "",
+        },
+        style: {
+          width: "80%",
+          margin: "2rem auto",
+          borderRadius: "12px",
+        },
+      },
+    ],
   },
-
-  // 6️⃣ Comparison Columns
   {
     id: uuidv4(),
-    slideName: "Comparison Columns",
-    type: "resizable-column",
-    slideOrder: 6,
-    className: "grid grid-cols-2 gap-6 p-6",
-    content: {
-      id: uuidv4(),
-      type: "multiColumn",
-      name: "Comparison",
-      content: [
-        {
-          id: uuidv4(),
-          type: "column",
-          name: "Left Column",
-          content: [
-            {
-              id: uuidv4(),
-              type: "heading3",
-              name: "Option A",
-              content: "",
-              placeholder: "Option A Title",
+    name: "Two Column Comparison",
+    description: "A two-column layout comparing two topics or ideas.",
+    layoutType: "comparison",
+    components: [
+      {
+        type: "multiColumn",
+        children: [
+          {
+            type: "column",
+            children: [
+              { type: "heading2", content: "Traditional Systems" },
+              {
+                type: "bulletedList",
+                content: [
+                  "Rigid infrastructure",
+                  "High maintenance costs",
+                  "Limited scalability",
+                ],
+              },
+            ],
+          },
+          {
+            type: "column",
+            children: [
+              { type: "heading2", content: "Modern AI Systems" },
+              {
+                type: "bulletedList",
+                content: [
+                  "Adaptive and self-learning",
+                  "Cloud-based scalability",
+                  "Lower operational costs",
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: uuidv4(),
+    name: "Image with Text",
+    description:
+      "A left-aligned image with descriptive text explaining a concept or process.",
+    layoutType: "imageText",
+    components: [
+      {
+        type: "imageAndText",
+        children: [
+          {
+            type: "image",
+            content: {
+              alt: "AI-powered robotic hand reaching toward a holographic brain in a futuristic environment",
+              src: "",
             },
-            {
-              id: uuidv4(),
-              type: "paragraph",
-              name: "Details A",
-              content: "",
-              placeholder: "Details about Option A...",
-            },
-          ],
+            style: { width: "45%", borderRadius: "10px" },
+          },
+          {
+            type: "paragraph",
+            content:
+              "Artificial Intelligence enhances automation, precision, and predictive capabilities across all industries.",
+            style: { width: "50%", fontSize: "1rem", lineHeight: "1.5" },
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: uuidv4(),
+    name: "Quote Highlight",
+    description:
+      "A centered quote slide emphasizing a key message or inspirational thought.",
+    layoutType: "quote",
+    components: [
+      {
+        type: "blockquote",
+        content:
+          "“The future belongs to those who understand how to harness the power of AI.”",
+        style: {
+          textAlign: "center",
+          fontStyle: "italic",
+          fontSize: "1.75rem",
+          margin: "2rem 0",
         },
-        {
-          id: uuidv4(),
-          type: "column",
-          name: "Right Column",
-          content: [
-            {
-              id: uuidv4(),
-              type: "heading3",
-              name: "Option B",
-              content: "",
-              placeholder: "Option B Title",
-            },
-            {
-              id: uuidv4(),
-              type: "paragraph",
-              name: "Details B",
-              content: "",
-              placeholder: "Details about Option B...",
-            },
-          ],
+      },
+      {
+        type: "paragraph",
+        content: "– Tsvetan Markov, Web Developer",
+        style: {
+          textAlign: "center",
+          fontSize: "1rem",
+          color: "#999",
         },
-      ],
-    },
+      },
+    ],
+  },
+  {
+    id: uuidv4(),
+    name: "Data Table",
+    description:
+      "Displays structured data such as metrics, comparisons, or KPIs.",
+    layoutType: "data",
+    components: [
+      {
+        type: "table",
+        content: JSON.stringify({
+          headers: ["Category", "2023", "2024", "2025"],
+          rows: [
+            ["AI Investment", "$2B", "$3.5B", "$5B"],
+            ["Adoption Rate", "25%", "40%", "65%"],
+            ["Efficiency Gain", "10%", "22%", "35%"],
+          ],
+        }),
+        style: { width: "100%", margin: "auto" },
+      },
+    ],
+  },
+  {
+    id: uuidv4(),
+    name: "Call to Action",
+    description:
+      "Encourages audience engagement or participation with a clear call to action.",
+    layoutType: "cta",
+    components: [
+      {
+        type: "heading2",
+        content: "Ready to Build with AI?",
+        style: {
+          textAlign: "center",
+          fontWeight: "bold",
+          fontSize: "2rem",
+        },
+      },
+      {
+        type: "paragraph",
+        content:
+          "Join thousands of developers shaping the future of automation and creativity.",
+        style: { textAlign: "center", fontSize: "1.1rem", color: "#666" },
+      },
+      {
+        type: "image",
+        content: {
+          alt: "Group of diverse professionals collaborating around laptops with AI holograms displayed",
+          src: "",
+        },
+        style: {
+          width: "60%",
+          margin: "1.5rem auto",
+          borderRadius: "10px",
+        },
+      },
+    ],
+  },
+  {
+    id: uuidv4(),
+    name: "Progress Overview",
+    description:
+      "A numbered list layout ideal for visualizing sequential progress or workflows.",
+    layoutType: "list",
+    components: [
+      {
+        type: "heading3",
+        content: "AI Implementation Steps",
+        style: { fontSize: "1.5rem", marginBottom: "1rem" },
+      },
+      {
+        type: "numberedList",
+        content: [
+          "Identify business challenges",
+          "Collect and preprocess data",
+          "Train machine learning models",
+          "Deploy and monitor solutions",
+        ],
+      },
+    ],
+  },
+  {
+    id: uuidv4(),
+    name: "Callout Box Highlight",
+    description:
+      "Highlights a key insight in a visually distinct box to capture audience attention.",
+    layoutType: "highlight",
+    components: [
+      {
+        type: "calloutBox",
+        content:
+          "AI-driven analytics can reduce operational costs by up to 40% when implemented effectively.",
+        style: {
+          backgroundColor: "#f0f8ff",
+          borderLeft: "6px solid #0070f3",
+          padding: "1.5rem",
+          borderRadius: "8px",
+          fontSize: "1rem",
+        },
+      },
+    ],
   },
 ];
