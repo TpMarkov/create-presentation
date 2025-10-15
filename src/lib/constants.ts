@@ -443,14 +443,14 @@ export const CreatePageCard = [
   },
 ];
 
-type LayoutComponent = {
+export type LayoutComponent = {
   type: ContentType;
   content?: string | string[] | { src?: string; alt?: string };
   style?: Record<string, string>;
   children?: LayoutComponent[];
 };
 
-type Layout = {
+export type Layout = {
   id: string;
   name: string;
   description: string;

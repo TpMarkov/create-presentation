@@ -57,8 +57,8 @@ const ThemePicker = ({ selectedTheme, onThemeSelect, themes }: Props) => {
       });
       setSlides(res.data);
       router.push(`/presentation/${project?.id}`);
-    } catch (error: any) {
-      toast.error("Error", { description: error.message });
+    } catch (error) {
+      toast.error("Error", { description: `${error}` });
     } finally {
       setLoading(false);
     }

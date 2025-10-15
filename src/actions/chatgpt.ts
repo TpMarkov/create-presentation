@@ -1,10 +1,11 @@
 "use server";
 import { OpenAI } from "openai";
-import { currentUser } from "@clerk/nextjs/server";
 import { client } from "@/lib/prisma";
 import { v4 as uuidv4 } from "uuid";
 import { ContentItem, Slide } from "@/lib/types";
-import { existingLayouts } from "@/lib/constants";
+import { existingLayouts, Layout, LayoutComponent } from "@/lib/constants";
+import { currentUser } from "@clerk/nextjs/server";
+import { onAuthencticateUser } from "./user";
 
 const openai = new OpenAI({
   apiKey: process.env.OPEN_AI_KEY,
@@ -106,31 +107,51 @@ const generateImageUrl = async (prompt: string): Promise<string> => {
     return "https://via.placeholder.com/1024";
   }
 };
-const findImageComponents = (layout: ContentItem): ContentItem[] => {
-  const images = [];
+const findImageComponents = (
+  layout: LayoutComponent | undefined
+): LayoutComponent[] => {
+  if (!layout) return [];
 
+  let images: LayoutComponent[] = [];
+
+  // If current component is an image, add it
   if (layout.type === "image") {
     images.push(layout);
   }
-  if (Array.isArray(layout.content)) {
-    layout.content.forEach((child) => {
-      images.push(...findImageComponents(child as ContentItem));
+
+  // If it has children, recursively collect images
+  if (Array.isArray(layout.children)) {
+    layout.children.forEach((child) => {
+      images = images.concat(findImageComponents(child));
     });
-  } else if (layout.content && typeof layout.content === "object") {
-    images.push(...findImageComponents(layout.content));
   }
 
   return images;
 };
-const replaceImagePlaceholders = async (layout: Slide) => {
-  const imageComponents = findImageComponents(layout.content);
-  console.log("🟢 Found image components:", imageComponents);
-  for (const component of imageComponents) {
-    console.log("🟢 Generating image for component:", component.alt);
-    component.content = await generateImageUrl(
-      component.alt || "Placeholder Image"
-    );
+const replaceImagePlaceholders = (
+  layouts: Layout[],
+  urls: string[]
+): Layout[] => {
+  let urlIndex = 0;
+
+  function traverse(component: LayoutComponent) {
+    if (!component) return;
+
+    // Replace image src
+    if (component.type === "image" && typeof component.content === "object") {
+      component.content.src = urls[urlIndex] || "";
+      urlIndex++;
+    }
+
+    if (Array.isArray(component.children)) {
+      component.children.forEach(traverse);
+    }
   }
+
+  return layouts.map((layout) => {
+    layout.components.forEach(traverse);
+    return layout;
+  });
 };
 
 export const generateLayoutsJson = async (outlineArray: string[]) => {
@@ -167,7 +188,7 @@ export const generateLayoutsJson = async (outlineArray: string[]) => {
     console.log("🟢Generating layouts...");
 
     const completion = await openai.chat.completions.create({
-      model: "chatgpt-4o-latest",
+      model: "gpt-4o-2024-11-20",
       messages: [
         {
           role: "system",
@@ -182,8 +203,8 @@ export const generateLayoutsJson = async (outlineArray: string[]) => {
       temperature: 0.7,
     });
 
-    const resposnseContent = completion?.choices?.[0]?.message?.content;
-
+    const resposnseContent = completion.choices?.[0]?.message?.content;
+    console.log(resposnseContent);
     if (!resposnseContent) {
       return { status: 400, error: "No content generate" };
     }
@@ -191,12 +212,20 @@ export const generateLayoutsJson = async (outlineArray: string[]) => {
     let jsonResponse;
 
     try {
-      jsonResponse = JSON.parse(
-        resposnseContent.replace(/```json|```/g, "").trim()
+      console.log("🟢 Raw AI Response:", resposnseContent);
+      const cleaned = resposnseContent.replace(/```json|```/g, "").trim();
+      jsonResponse = JSON.parse(cleaned);
+
+      if (!Array.isArray(jsonResponse)) {
+        console.error("AI returned invalid layout array", jsonResponse);
+        return { status: 500, error: "Invalid layout JSON structure" };
+      }
+
+      await Promise.all(
+        (jsonResponse = replaceImagePlaceholders(jsonResponse, []))
       );
-      await Promise.all(jsonResponse.map(replaceImagePlaceholders));
-    } catch (error) {
-      console.error("Error", error);
+    } catch (err) {
+      console.error("Failed to parse AI response or replace images:", err);
       return { status: 500, error: "Internal server error" };
     }
 
@@ -214,11 +243,11 @@ export const generateLayouts = async (projectId: string, theme: string) => {
       return { status: 400, error: "Project ID is required" };
     }
 
-    const user = await currentUser();
+    const user = await onAuthencticateUser();
 
     const userExist = await client.user.findUnique({
       where: {
-        clerkId: user?.id,
+        clerkId: user.user?.clerkId,
       },
     });
 
