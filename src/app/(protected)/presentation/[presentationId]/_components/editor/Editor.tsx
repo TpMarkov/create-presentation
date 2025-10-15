@@ -9,9 +9,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDrag } from "react-dnd";
 import { useDrop } from "react-dnd";
 import { v4 as uuidv4 } from "uuid";
-import ContentRenderer, {
-  MasterRecursiveComponent,
-} from "./MasterRecursiveComponent";
+import { MasterRecursiveComponent } from "./MasterRecursiveComponent";
+
 import {
   Popover,
   PopoverContent,
@@ -147,20 +146,27 @@ export const DraggableSlide: React.FC<DraggableSlideProps> = ({
       </div>
       {isEditable && (
         <Popover>
-          <PopoverTrigger className="absolute top-2 left-2">
-            <Button size="sm" variant="outline">
+          <PopoverTrigger asChild>
+            <Button
+              size="sm"
+              variant="outline"
+              className="absolute top-2 left-2"
+            >
               <EllipsisIcon className="w-5 h-5" />
               <span className="sr-only">Slide options</span>
             </Button>
-            <PopoverContent className="w-fit p-0">
-              <div>
-                <Button variant="ghost" onClick={() => handleDelete(slide.id)}>
-                  <TrashIcon className="w-5 h-5 text-red-500" />
-                  <span className="sr-only">Delete slide</span>
-                </Button>
-              </div>
-            </PopoverContent>
           </PopoverTrigger>
+
+          <PopoverContent className="w-fit p-0">
+            <Button
+              variant="ghost"
+              onClick={() => handleDelete(slide.id)}
+              className="flex items-center gap-2"
+            >
+              <TrashIcon className="w-5 h-5 text-red-500" />
+              Delete
+            </Button>
+          </PopoverContent>
         </Popover>
       )}
     </div>
@@ -168,7 +174,7 @@ export const DraggableSlide: React.FC<DraggableSlideProps> = ({
 };
 
 const Editor = ({ isEditable }: Props) => {
-  const [loading, setLoading] = useState();
+  const [loading, setLoading] = useState(true);
   const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const {
@@ -229,6 +235,10 @@ const Editor = ({ isEditable }: Props) => {
       });
     }
   }, [currentSlide]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") setLoading(false);
+  }, []);
 
   return (
     <div className="flex-1 flex flex-col h-full max-w-3xl mx-auto px-4 mb-20">
