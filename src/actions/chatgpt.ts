@@ -196,25 +196,18 @@ export const generateLayoutsJson = async (outlineArray: string[]) => {
           role: "system",
           content: "You generate JSON layouts for presentations",
         },
-        {
-          role: "user",
-          content: prompt,
-        },
+        { role: "user", content: prompt },
       ],
       max_tokens: 5000,
       temperature: 0.7,
     });
 
     const resposnseContent = completion.choices?.[0]?.message?.content;
-    console.log(resposnseContent);
-    if (!resposnseContent) {
-      return { status: 400, error: "No content generate" };
-    }
+    if (!resposnseContent)
+      return { status: 400, error: "No content generated" };
 
     let jsonResponse;
-
     try {
-      console.log("🟢 Raw AI Response:", resposnseContent);
       const cleaned = resposnseContent.replace(/```json|```/g, "").trim();
       jsonResponse = JSON.parse(cleaned);
 
@@ -223,9 +216,22 @@ export const generateLayoutsJson = async (outlineArray: string[]) => {
         return { status: 500, error: "Invalid layout JSON structure" };
       }
 
-      await Promise.all(
-        (jsonResponse = replaceImagePlaceholders(jsonResponse, []))
+      // 🔹 Step: Generate URLs for all image components
+      const allImageComponents: LayoutComponent[] = [];
+      jsonResponse.forEach((layout) => {
+        layout.content.forEach((comp: LayoutComponent) => {
+          allImageComponents.push(...findImageComponents(comp));
+        });
+      });
+
+      const urls = await Promise.all(
+        allImageComponents.map((img) =>
+          generateImageUrl(img.content.alt || "Professional slide image")
+        )
       );
+
+      // 🔹 Replace placeholders with actual URLs
+      jsonResponse = replaceImagePlaceholders(jsonResponse, urls);
     } catch (err) {
       console.error("Failed to parse AI response or replace images:", err);
       return { status: 500, error: "Internal server error" };
@@ -235,7 +241,7 @@ export const generateLayoutsJson = async (outlineArray: string[]) => {
     return { status: 200, data: jsonResponse };
   } catch (error) {
     console.log("Error", error);
-    return { status: 500, error: "Internal server errror" };
+    return { status: 500, error: "Internal server error" };
   }
 };
 
