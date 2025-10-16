@@ -143,13 +143,15 @@ const replaceImagePlaceholders = (
       urlIndex++;
     }
 
-    if (Array.isArray(component.children)) {
-      component.children.forEach(traverse);
+    if (Array.isArray(component.content)) {
+      component.content.forEach(traverse);
     }
   }
 
   return layouts.map((layout) => {
-    layout.components.forEach(traverse);
+    if (Array.isArray(layout.content)) {
+      layout.content.forEach(traverse);
+    }
     return layout;
   });
 };

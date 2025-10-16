@@ -2,6 +2,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSlideStore } from "@/store/useSlideStore";
 import { useEffect, useState } from "react";
+import { DraggableSlide } from "../../editor/Editor";
 
 type Props = {};
 
@@ -41,7 +42,7 @@ const LayoutPreview = (props: Props) => {
             </div>
             {/* WIP: add dragable slide preview after you build the editor */}
             {/* {slides.map((slide, index) => (
-              <DraggableSlidePreview
+              <DraggableSlide
                 key={slide.id || index}
                 slide={slide}
                 index={index}

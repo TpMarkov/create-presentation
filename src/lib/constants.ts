@@ -4,7 +4,7 @@ import {
   SettingsIcon,
   TrashIcon,
 } from "lucide-react";
-import { ContentType, Slide, Theme } from "./types";
+import { ContentItem, ContentType, Slide, Theme } from "./types";
 import { v4 as uuidv4 } from "uuid";
 
 export const data = {
@@ -458,25 +458,23 @@ export type Layout = {
   components: LayoutComponent[];
 };
 
-export const existingLayouts: Layout[] = [
+export const existingLayouts: ContentItem[] = [
   {
     id: uuidv4(),
+    type: "container",
     name: "Title Slide",
-    description:
-      "An introductory slide with a centered title, subtitle, and background image.",
-    layoutType: "intro",
-    components: [
+    content: [
       {
+        id: uuidv4(),
         type: "title",
+        name: "Title",
         content: "Welcome to the Future of AI",
-        style: {
-          textAlign: "center",
-          fontSize: "3rem",
-          fontWeight: "bold",
-        },
+        style: { textAlign: "center", fontSize: "3rem", fontWeight: "bold" },
       },
       {
+        id: uuidv4(),
         type: "paragraph",
+        name: "Subtitle",
         content:
           "Exploring innovation, creativity, and intelligence redefined.",
         style: {
@@ -487,34 +485,39 @@ export const existingLayouts: Layout[] = [
         },
       },
       {
+        id: uuidv4(),
         type: "image",
-        content: {
-          alt: "Futuristic neural network visualization with glowing blue nodes and data flow lines",
-          src: "",
-        },
-        style: {
-          width: "80%",
-          margin: "2rem auto",
-          borderRadius: "12px",
-        },
+        name: "Hero Image",
+        content: { src: "", alt: "Futuristic neural network visualization" },
+        style: { width: "80%", margin: "2rem auto", borderRadius: "12px" },
       },
     ],
   },
   {
     id: uuidv4(),
+    type: "container",
     name: "Two Column Comparison",
-    description: "A two-column layout comparing two topics or ideas.",
-    layoutType: "comparison",
-    components: [
+    content: [
       {
+        id: uuidv4(),
         type: "multiColumn",
-        children: [
+        name: "Columns",
+        content: [
           {
+            id: uuidv4(),
             type: "column",
-            children: [
-              { type: "heading2", content: "Traditional Systems" },
+            name: "Left Column",
+            content: [
               {
+                id: uuidv4(),
+                type: "heading2",
+                name: "Heading",
+                content: "Traditional Systems",
+              },
+              {
+                id: uuidv4(),
                 type: "bulletedList",
+                name: "List",
                 content: [
                   "Rigid infrastructure",
                   "High maintenance costs",
@@ -524,11 +527,20 @@ export const existingLayouts: Layout[] = [
             ],
           },
           {
+            id: uuidv4(),
             type: "column",
-            children: [
-              { type: "heading2", content: "Modern AI Systems" },
+            name: "Right Column",
+            content: [
               {
+                id: uuidv4(),
+                type: "heading2",
+                name: "Heading",
+                content: "Modern AI Systems",
+              },
+              {
+                id: uuidv4(),
                 type: "bulletedList",
+                name: "List",
                 content: [
                   "Adaptive and self-learning",
                   "Cloud-based scalability",
@@ -538,164 +550,6 @@ export const existingLayouts: Layout[] = [
             ],
           },
         ],
-      },
-    ],
-  },
-  {
-    id: uuidv4(),
-    name: "Image with Text",
-    description:
-      "A left-aligned image with descriptive text explaining a concept or process.",
-    layoutType: "imageText",
-    components: [
-      {
-        type: "imageAndText",
-        children: [
-          {
-            type: "image",
-            content: {
-              alt: "AI-powered robotic hand reaching toward a holographic brain in a futuristic environment",
-              src: "",
-            },
-            style: { width: "45%", borderRadius: "10px" },
-          },
-          {
-            type: "paragraph",
-            content:
-              "Artificial Intelligence enhances automation, precision, and predictive capabilities across all industries.",
-            style: { width: "50%", fontSize: "1rem", lineHeight: "1.5" },
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: uuidv4(),
-    name: "Quote Highlight",
-    description:
-      "A centered quote slide emphasizing a key message or inspirational thought.",
-    layoutType: "quote",
-    components: [
-      {
-        type: "blockquote",
-        content:
-          "“The future belongs to those who understand how to harness the power of AI.”",
-        style: {
-          textAlign: "center",
-          fontStyle: "italic",
-          fontSize: "1.75rem",
-          margin: "2rem 0",
-        },
-      },
-      {
-        type: "paragraph",
-        content: "– Tsvetan Markov, Web Developer",
-        style: {
-          textAlign: "center",
-          fontSize: "1rem",
-          color: "#999",
-        },
-      },
-    ],
-  },
-  {
-    id: uuidv4(),
-    name: "Data Table",
-    description:
-      "Displays structured data such as metrics, comparisons, or KPIs.",
-    layoutType: "data",
-    components: [
-      {
-        type: "table",
-        content: JSON.stringify({
-          headers: ["Category", "2023", "2024", "2025"],
-          rows: [
-            ["AI Investment", "$2B", "$3.5B", "$5B"],
-            ["Adoption Rate", "25%", "40%", "65%"],
-            ["Efficiency Gain", "10%", "22%", "35%"],
-          ],
-        }),
-        style: { width: "100%", margin: "auto" },
-      },
-    ],
-  },
-  {
-    id: uuidv4(),
-    name: "Call to Action",
-    description:
-      "Encourages audience engagement or participation with a clear call to action.",
-    layoutType: "cta",
-    components: [
-      {
-        type: "heading2",
-        content: "Ready to Build with AI?",
-        style: {
-          textAlign: "center",
-          fontWeight: "bold",
-          fontSize: "2rem",
-        },
-      },
-      {
-        type: "paragraph",
-        content:
-          "Join thousands of developers shaping the future of automation and creativity.",
-        style: { textAlign: "center", fontSize: "1.1rem", color: "#666" },
-      },
-      {
-        type: "image",
-        content: {
-          alt: "Group of diverse professionals collaborating around laptops with AI holograms displayed",
-          src: "",
-        },
-        style: {
-          width: "60%",
-          margin: "1.5rem auto",
-          borderRadius: "10px",
-        },
-      },
-    ],
-  },
-  {
-    id: uuidv4(),
-    name: "Progress Overview",
-    description:
-      "A numbered list layout ideal for visualizing sequential progress or workflows.",
-    layoutType: "list",
-    components: [
-      {
-        type: "heading3",
-        content: "AI Implementation Steps",
-        style: { fontSize: "1.5rem", marginBottom: "1rem" },
-      },
-      {
-        type: "numberedList",
-        content: [
-          "Identify business challenges",
-          "Collect and preprocess data",
-          "Train machine learning models",
-          "Deploy and monitor solutions",
-        ],
-      },
-    ],
-  },
-  {
-    id: uuidv4(),
-    name: "Callout Box Highlight",
-    description:
-      "Highlights a key insight in a visually distinct box to capture audience attention.",
-    layoutType: "highlight",
-    components: [
-      {
-        type: "calloutBox",
-        content:
-          "AI-driven analytics can reduce operational costs by up to 40% when implemented effectively.",
-        style: {
-          backgroundColor: "#f0f8ff",
-          borderLeft: "6px solid #0070f3",
-          padding: "1.5rem",
-          borderRadius: "8px",
-          fontSize: "1rem",
-        },
       },
     ],
   },

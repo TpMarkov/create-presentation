@@ -108,6 +108,8 @@ export const DraggableSlide: React.FC<DraggableSlideProps> = ({
     canDrag: isEditable,
   });
 
+  console.log(slide);
+
   const handleContentChange = (
     contentId: string,
     newContent: string | string[] | string[][]
@@ -125,7 +127,7 @@ export const DraggableSlide: React.FC<DraggableSlideProps> = ({
         "shadow-xl transition-shadow duration-300",
         "flex flex-col",
         index === currentSlide ? "ring-2 ring-blue-500 ring-offset-2" : "",
-        // slide.className,
+        slide.className,
         isDragging ? "opacity-50" : "opacity-100"
       )}
       style={{
