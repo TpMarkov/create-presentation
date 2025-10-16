@@ -454,6 +454,7 @@ export type Layout = {
   id: string;
   name: string;
   description: string;
+  content?: string;
   layoutType: string;
   components: LayoutComponent[];
 };
